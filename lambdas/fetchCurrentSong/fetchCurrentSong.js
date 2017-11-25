@@ -67,8 +67,8 @@ function changeSong(callback) {
 
         let randomIndex = Math.floor((Math.random()*1000) % songs.length);
         let songToPlay = songs[randomIndex];
-
-        musicmetadata(getSongStreamFromS3(songToPlay.Key), {duration: true}, function(err, meta) {
+        
+        musicmetadata(getSongStreamFromS3(songToPlay.Key), {duration: true, fileSize: songToPlay.Size}, function(err, meta) {
             delete meta.picture; //dont need the pic... yet
 
             meta['addedOn'] = Date.now();
