@@ -11,8 +11,10 @@ exports.handler = (event, context, callback) => {
     getCurrentSongFile(function (err, currentSongFile) {
         let currentSongMeta = currentSongFile ? JSON.parse(currentSongFile.Body) : {};
         let hasCurrentSongEnded = Math.floor(currentSongMeta.addedOn + currentSongMeta.duration*1000) < Date.now();
-        
-        if (err || hasCurrentSongEnded) {
+
+        let forcePlayNextSong = event['queryStringParameters'] && event['queryStringParameters']['nextSong'];
+
+        if (err || hasCurrentSongEnded || forcePlayNextSong) {
             return changeSong(function (err, newSongData) {
                 callback(err, respond(newSongData));
             })
