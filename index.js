@@ -1,22 +1,16 @@
-var player = document.getElementById('player');
-var artistName = document.getElementById('artist');
-var songName = document.getElementById('song');
+var express = require('express');
+var app = express();
 
-function fetchCurrentSong() {
-    axios.get('https://q2af43kaa5.execute-api.ap-south-1.amazonaws.com/prod/mojo')
-        .then(function(response) {
-            player.src = response.data.url;
-            player.currentTime = Math.floor((Date.now() - response.data.addedOn) / 1000);
-            player.play();
-            artistName.textContent = response.data.artist[0];
-            songName.textContent = response.data.title;
-        })
-}
+app.set('port', (process.env.PORT || 5000));
 
-player.addEventListener('ended', function() {
-    if (player.ended) {
-        fetchCurrentSong();
-    }
-})
+app.use(express.static(__dirname + '/public'));
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
-fetchCurrentSong();
+app.get('/', function(request, response) {
+  response.render('index')
+});
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
