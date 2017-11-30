@@ -3,13 +3,15 @@ var artistName = document.getElementById('artist');
 var songName = document.getElementById('song');
 
 function fetchCurrentSong() {
-    axios.get('https://q2af43kaa5.execute-api.ap-south-1.amazonaws.com/prod/mojo')
+    axios.get('http://localhost:5000/current')
         .then(function(response) {
-            player.src = response.data.url;
-            player.currentTime = Math.floor((Date.now() - response.data.addedOn) / 1000);
+            var data = JSON.parse(response.data.body);
+            console.log(data);
+            player.src = data.url;
+            player.currentTime = Math.floor((Date.now() - data.addedOn) / 1000);
             player.play();
-            artistName.textContent = response.data.artist[0];
-            songName.textContent = response.data.title;
+            artistName.textContent = data.artist[0];
+            songName.textContent = data.title;
         })
 }
 

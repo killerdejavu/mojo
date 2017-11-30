@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.156.0",
+    "aws-sdk": "^2.160.0",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "musicmetadata": "^2.0.5",
