@@ -111,7 +111,7 @@ function fetchCurrentSong(callback) {
         var hasCurrentSongEnded = Math.floor(currentSongMeta.addedOn + currentSongMeta.duration * 1000) < Date.now();
         console.log(currentSongMeta);
         console.log(hasCurrentSongEnded);
-        if (err || hasCurrentSongEnded || forcePlayNextSong) {
+        if (err || hasCurrentSongEnded) {
             return changeSong(function (err, newSongData) {
                 console.log(newSongData)
                 console.log(err)

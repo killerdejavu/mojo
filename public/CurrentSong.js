@@ -3,7 +3,7 @@ var artistName = document.getElementById('artist');
 var songName = document.getElementById('song');
 
 function fetchCurrentSong() {
-    axios.get('http://localhost:5000/current')
+    axios.get('/current')
         .then(function(response) {
             var data = JSON.parse(response.data.body);
             console.log(data);
