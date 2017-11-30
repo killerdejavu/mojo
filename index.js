@@ -12,8 +12,7 @@ app.get('/', function (request, response) {
 });
 
 app.get('/current', function (request, response) {
-    console.log('In current');
-    fetchCurrentSong(function (err, res) {
+    fetchCurrentSong(request.query.next, function (err, res) {
         console.log(res);
         response.send(res);
     })
@@ -73,9 +72,6 @@ function changeSong(callback) {
         Bucket: BUCKET,
         Prefix: MUSIC_FOLDER
     }, function (err, response) {
-        console.log(arguments)
-        console.log('Inside list');
-        console.log(response);
         var songs = response.Contents;
 
         songs.splice(0, 1);
@@ -104,17 +100,13 @@ function changeSong(callback) {
     });
 }
 
-function fetchCurrentSong(callback) {
-    console.log('In fetchCurrentSong');
+function fetchCurrentSong(should_play_next_song, callback) {
     getCurrentSongFile(function (err, currentSongFile) {
         var currentSongMeta = currentSongFile ? JSON.parse(currentSongFile.Body) : {};
         var hasCurrentSongEnded = Math.floor(currentSongMeta.addedOn + currentSongMeta.duration * 1000) < Date.now();
-        console.log(currentSongMeta);
-        console.log(hasCurrentSongEnded);
-        if (err || hasCurrentSongEnded) {
+        console.log(should_play_next_song)
+        if (err || hasCurrentSongEnded || should_play_next_song) {
             return changeSong(function (err, newSongData) {
-                console.log(newSongData)
-                console.log(err)
                 callback(err, respond(newSongData));
             })
         }
