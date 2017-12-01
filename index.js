@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
-
+var redis = require('redis');
+var client = redis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -104,7 +105,6 @@ function fetchCurrentSong(should_play_next_song, callback) {
     getCurrentSongFile(function (err, currentSongFile) {
         var currentSongMeta = currentSongFile ? JSON.parse(currentSongFile.Body) : {};
         var hasCurrentSongEnded = Math.floor(currentSongMeta.addedOn + currentSongMeta.duration * 1000) < Date.now();
-        console.log(should_play_next_song)
         if (err || hasCurrentSongEnded || should_play_next_song) {
             return changeSong(function (err, newSongData) {
                 callback(err, respond(newSongData));
