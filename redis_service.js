@@ -25,12 +25,15 @@ module.exports = {
             console.log('------------');
             if (!should_current_song_not_change) {
                 this.popFirstSongFromPlaylist(function (err, song_id) {
-                    this.setCurrentSongDetails(song_id);
-                    return this.getSongDetailsFromStore(song_id, function (song_data) {
-                        song_data['start_time'] = starting_timestamp;
-                        song_data['ending_time'] = ending_timestamp;
-                        callback(song_data)
-                    });
+                    this.setCurrentSongDetails(song_id, function (err, res) {
+                        this.getCurrentSongDetails(function (new_current_song_id, new_starting_timestamp, new_ending_timestamp) {
+                            return this.getSongDetailsFromStore(song_id, function (song_data) {
+                                song_data['start_time'] = new_starting_timestamp;
+                                song_data['ending_time'] = new_ending_timestamp;
+                                callback(song_data)
+                            });
+                        }.bind(this));
+                    }.bind(this));
                 }.bind(this));
 
             }
