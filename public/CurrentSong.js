@@ -12,7 +12,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function fetchCurrentSong() {
+function fetchCurrentSong(seek) {
     var query_value = getParameterByName('next');
     var url = query_value ? '/current?next=true': '/current';
     axios.get(url)
@@ -21,9 +21,17 @@ function fetchCurrentSong() {
             artistName.textContent = data.artist[0];
             songName.textContent = data.title;
             console.log(data);
-            player.src = data.s3_url;
-            player.currentTime = Math.floor((Date.now() - data.start_time) / 1000);
-            console.log('Song starting time', player.currentTime);
+            console.log('Song starting time', Math.floor((Date.now() - data.start_time) / 1000));
+
+            var player = new Howl({
+                src: [data.s3_url],
+                html5: true,
+                onend: function() {
+                    fetchCurrentSong();
+                }
+            });
+
+            seek && player.seek(Math.floor((Date.now() - data.start_time) / 1000));
             player.play();
         })
 }
@@ -38,4 +46,4 @@ player.addEventListener('ended', function() {
     }
 });
 
-fetchCurrentSong();
+fetchCurrentSong(true);
