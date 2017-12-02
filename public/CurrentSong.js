@@ -22,15 +22,15 @@ function fetchCurrentSong() {
             songName.textContent = data.title;
             console.log(data);
             player.src = data.s3_url;
-            console.log(data.start_time);
             player.currentTime = Math.floor((Date.now() - data.start_time) / 1000);
+            console.log('Song starting time', player.currentTime);
             player.play();
         })
 }
 
 player.addEventListener('ended', function() {
     if (player.ended) {
-        console.log('ended')
+        console.log('Song has ended!');
         fetchCurrentSong();
     }
 });
