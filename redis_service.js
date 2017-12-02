@@ -17,6 +17,7 @@ module.exports = {
         this.getCurrentSongDetails(function (current_song_id, starting_timestamp, ending_timestamp) {
             var current_time = moment();
             console.log('current time', current_time);
+            console.log(starting_timestamp, ending_timestamp);
             console.log('starting timestamp', moment(starting_timestamp));
             console.log('ending timestamp', moment(ending_timestamp));
             console.log('should change song ? - ', !should_current_song_not_change);
