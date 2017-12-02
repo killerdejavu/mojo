@@ -17,20 +17,20 @@ function fetchCurrentSong(seek) {
     var url = query_value ? '/current?next=true': '/current';
     axios.get(url)
         .then(function(response) {
-            var data = JSON.parse(response.data.body);
+            var data = response.data;
 
             artistName.textContent = data.artist[0];
             songName.textContent = data.title;
 
             var player = new Howl({
-                src: [data.url],
+                src: [data.s3_url],
                 html5: true,
                 onend: function() {
                     fetchCurrentSong();
                 }
             });
 
-            seek && player.seek(Math.floor((Date.now() - data.addedOn) / 1000));
+            seek && player.seek(Math.floor((Date.now() - data.start_time) / 1000));
             player.play();
         })
 }
