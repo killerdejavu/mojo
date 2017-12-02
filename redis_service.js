@@ -67,6 +67,8 @@ module.exports = {
 
     getCurrentSongDetails: function (callback) {
         redis_client.hmget('current_song', 'song_id', 'starting_timestamp', 'ending_timestamp', function (err, response) {
+            console.log(err);
+            if (!response) return callback(null, null, null);
             var song_id = response[0];
             if (!song_id) return callback(null, null, null);
             var starting_timestamp = moment(response[1]);
