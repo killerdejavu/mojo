@@ -27,6 +27,9 @@ function fetchCurrentSong() {
             player.play();
         })
 }
+player.addEventListener('loadedmetadata', function() {
+    console.log('metadata -', player)
+});
 
 player.addEventListener('ended', function() {
     if (player.ended) {
