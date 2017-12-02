@@ -85,10 +85,13 @@ module.exports = {
                     console.log('no songs in playlist');
                     return callback([])
                 }
+                var total_playing_time = 0;
                 var all_songs_data = all_songs.map(function (song_raw) {
-                    return JSON.parse(song_raw)
+                    var parsed_data = JSON.parse(song_raw);
+                    total_playing_time += parsed_data.duration;
+                    return parsed_data
                 });
-                return callback(all_songs_data)
+                return callback({'total_playing_time_in_mins': total_playing_time/60, 'songs_in_order': all_songs_data})
             })
         });
     }
