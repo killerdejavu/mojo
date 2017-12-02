@@ -21,8 +21,9 @@ module.exports = {
                 this.popFirstSongFromPlaylist(function (err, song_id) {
                     this.setCurrentSongDetails(song_id);
                     return this.getSongDetailsFromStore(song_id, function (song_data) {
-                        song_data['start_time'] = starting_timestamp.unix();
-                        song_data['ending_time'] = ending_timestamp.unix();
+                        console.log(song_data);
+                        song_data['start_time'] = starting_timestamp.valueOf();
+                        song_data['ending_time'] = ending_timestamp.valueOf();
                         callback(song_data)
                     });
                 }.bind(this));
