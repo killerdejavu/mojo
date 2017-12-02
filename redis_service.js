@@ -16,7 +16,7 @@ module.exports = {
     getCurrentSong: function (callback) {
         this.getCurrentSongDetails(function (current_song_id, starting_timestamp, ending_timestamp) {
             var current_time = moment();
-            var should_current_song_not_change = current_song_id && current_time.isBetween(starting_timestamp, ending_timestamp, 'second');
+            var should_current_song_not_change = current_song_id && current_time.isBetween(moment(starting_timestamp), moment(ending_timestamp), 'second');
             console.log('current time', current_time);
             console.log('starting timestamp', starting_timestamp);
             console.log('ending timestamp', ending_timestamp);
@@ -26,9 +26,8 @@ module.exports = {
                 this.popFirstSongFromPlaylist(function (err, song_id) {
                     this.setCurrentSongDetails(song_id);
                     return this.getSongDetailsFromStore(song_id, function (song_data) {
-                        console.log(song_data);
-                        song_data['start_time'] = starting_timestamp.valueOf();
-                        song_data['ending_time'] = ending_timestamp.valueOf();
+                        song_data['start_time'] = starting_timestamp;
+                        song_data['ending_time'] = ending_timestamp;
                         callback(song_data)
                     });
                 }.bind(this));
@@ -36,8 +35,8 @@ module.exports = {
             }
             else {
                 return this.getSongDetailsFromStore(current_song_id, function (song_data) {
-                    song_data['start_time'] = starting_timestamp.valueOf();
-                    song_data['ending_time'] = ending_timestamp.valueOf();
+                    song_data['start_time'] = starting_timestamp;
+                    song_data['ending_time'] = ending_timestamp;
                     callback(song_data)
                 })
             }
@@ -65,8 +64,8 @@ module.exports = {
             redis_client.hmset(
                 'current_song',
                 'song_id', song_id,
-                'starting_timestamp', moment().format(),
-                'ending_timestamp', moment().add(duration, 'second').format(),
+                'starting_timestamp', moment().valueOf(),
+                'ending_timestamp', moment().add(duration, 'second').valueOf(),
                 callback);
         });
     },
@@ -77,8 +76,8 @@ module.exports = {
             if (!response) return callback(null, null, null);
             var song_id = response[0];
             if (!song_id) return callback(null, null, null);
-            var starting_timestamp = moment(response[1]);
-            var ending_timestamp = moment(response[2]);
+            var starting_timestamp = response[1];
+            var ending_timestamp = response[2];
             callback(song_id, starting_timestamp, ending_timestamp);
         });
     },
