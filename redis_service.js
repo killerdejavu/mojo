@@ -16,7 +16,12 @@ module.exports = {
     getCurrentSong: function (callback) {
         this.getCurrentSongDetails(function (current_song_id, starting_timestamp, ending_timestamp) {
             var current_time = moment();
-            var should_current_song_not_change = current_song_id && current_time.isBetween(starting_timestamp, ending_timestamp);
+            var should_current_song_not_change = current_song_id && current_time.isBetween(starting_timestamp, ending_timestamp, 'second');
+            console.log('current time', current_time);
+            console.log('starting timestamp', starting_timestamp);
+            console.log('ending timestamp', ending_timestamp);
+            console.log('should change song ? - ', !should_current_song_not_change);
+            console.log('------------');
             if (!should_current_song_not_change) {
                 this.popFirstSongFromPlaylist(function (err, song_id) {
                     this.setCurrentSongDetails(song_id);
