@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "shell": "node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,6 +15,7 @@
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "musicmetadata": "^2.0.5",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "ytdl-core": "^0.18.3"
   }
 }
