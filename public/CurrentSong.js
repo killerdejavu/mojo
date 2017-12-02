@@ -17,18 +17,20 @@ function fetchCurrentSong() {
     var url = query_value ? '/current?next=true': '/current';
     axios.get(url)
         .then(function(response) {
-            var data = JSON.parse(response.data.body);
-            console.log(data);
-            player.src = data.url;
-            player.currentTime = Math.floor((Date.now() - data.addedOn) / 1000);
-            player.play();
+            var data = response.data;
             artistName.textContent = data.artist[0];
             songName.textContent = data.title;
+            console.log(data);
+            player.src = data.s3_url;
+            console.log(data.start_time);
+            player.currentTime = Math.floor((Date.now() - data.start_time) / 1000);
+            player.play();
         })
 }
 
 player.addEventListener('ended', function() {
     if (player.ended) {
+        console.log('ended')
         fetchCurrentSong();
     }
 });
