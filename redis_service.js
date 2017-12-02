@@ -20,9 +20,9 @@ module.exports = {
             console.log(starting_timestamp, ending_timestamp);
             console.log('starting timestamp', moment(starting_timestamp));
             console.log('ending timestamp', moment(ending_timestamp));
+            var should_current_song_not_change = current_song_id && current_time.isBetween(moment(starting_timestamp), moment(ending_timestamp), 'second');
             console.log('should change song ? - ', !should_current_song_not_change);
             console.log('------------');
-            var should_current_song_not_change = current_song_id && current_time.isBetween(moment(starting_timestamp), moment(ending_timestamp), 'second');
             if (!should_current_song_not_change) {
                 this.popFirstSongFromPlaylist(function (err, song_id) {
                     this.setCurrentSongDetails(song_id);
