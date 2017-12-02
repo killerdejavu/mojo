@@ -41,9 +41,8 @@ app.get('/playlist', function (req, res) {
 });
 
 app.get('/add_songs', function (req, res) {
-    addAllSongsInS3ToPlaylist(function (err, response) {
-        res.send('Success!!')
-    });
+    addAllSongsInS3ToPlaylist();
+    res.send('Success!!')
 });
 
 function respond(data) {
