@@ -77,8 +77,8 @@ module.exports = {
             if (!response) return callback(null, null, null);
             var song_id = response[0];
             if (!song_id) return callback(null, null, null);
-            var starting_timestamp = response[1];
-            var ending_timestamp = response[2];
+            var starting_timestamp = parseInt(response[1]);
+            var ending_timestamp = parseInt(response[2]);
             callback(song_id, starting_timestamp, ending_timestamp);
         });
     },
