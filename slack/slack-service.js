@@ -1,5 +1,6 @@
 var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
+const axios = require('axios');
 
 function isValidSlackRequest(token) {
     return token === "1avbAdJLErZeZ7VoclM0um2b";
@@ -40,7 +41,15 @@ function handleIncomingSlackData(slack_data) {
     }
 }
 
+function sendDataToSlackChannel() {
+    let hook_url = 'https://hooks.slack.com/services/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';
+    axios.post(hook_url, {
+        text: 'New song is starting'
+    })
+}
+
 
 module.exports = {
-    handleIncomingSlackData: handleIncomingSlackData
+    handleIncomingSlackData: handleIncomingSlackData,
+    sendDataToSlackChannel: sendDataToSlackChannel
 };

@@ -3,6 +3,7 @@ const redisClient = require('../utils/redis');
 const REDIS_CURRENT_SONG_KEY = require('../config').REDIS_CURRENT_SONG_KEY;
 const songService = require('../songs/songs-service');
 const playlistService = require('../playlist/playlist-service');
+const slackService = require('../slack/slack-service');
 
 function getCurrentSong() {
     return getCurrentSongDetails().then((songData) => {
@@ -33,6 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
+                    slackService.sendDataToSlackChannel();
                     resolve(songData);
                 });
         });

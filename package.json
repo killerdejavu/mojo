@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.162.0",
+    "axios": "^0.17.1",
     "body-parser": "^1.18.2",
     "debug": "^3.1.0",
     "ejs": "^2.5.7",
