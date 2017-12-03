@@ -53,7 +53,28 @@ function fetchSongAndAddToStore(link) {
     return fetchSong(link).then(songService.putSong);
 }
 
+function parseYoutubeLinksFromText(str) {
+    const regex = /(?:https?:\/\/)(?:www\.)?(?:youtube|youtu)\.(?:be|com)\/[^\s]+/g;
+    let m;
+
+    let youtube_links = [];
+    while ((m = regex.exec(str)) !== null) {
+        // This is necessary to avoid infinite loops with zero-width matches
+        if (m.index === regex.lastIndex) {
+            regex.lastIndex++;
+        }
+
+        // The result can be accessed through the `m`-variable.
+        m.forEach((match, groupIndex) => {
+            youtube_links.push(match);
+        });
+    }
+
+    return youtube_links
+}
+
 module.exports = {
     fetchSong: fetchSong,
-    fetchSongAndAddToStore: fetchSongAndAddToStore
+    fetchSongAndAddToStore: fetchSongAndAddToStore,
+    parseYoutubeLinksFromText: parseYoutubeLinksFromText
 };
