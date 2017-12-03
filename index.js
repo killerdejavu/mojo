@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 const radioService = require('./radio/radio-service');
+const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
 const playlistService = require('./playlist/playlist-service');
 
@@ -22,7 +23,7 @@ app.get('/current', function (request, response) {
 });
 
 app.get('/playlist', function (req, res) {
-    redis_service.getAllSongsInPlaylist(function (playlist) {
+    playlistService.getAllSongsInPlaylist(function (playlist) {
         res.send(playlist);
     })
 });
