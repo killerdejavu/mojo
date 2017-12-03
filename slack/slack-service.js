@@ -3,7 +3,7 @@ var playlistService = require('../playlist/playlist-service');
 const axios = require('axios');
 
 function isValidSlackRequest(token) {
-    return token === "1avbAdJLErZeZ7VoclM0um2b";
+    return token === "1avbAdJLErZeZ7VoclM0um2b" || token === "7lT991VEoNVG3o0dsTYnBGyG";
 }
 
 function parseYoutubeLinksFromText(str) {
