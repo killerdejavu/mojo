@@ -5,7 +5,7 @@ var playlistService = require('../playlist/playlist-service');
 const config = require('../config');
 
 function isValidSlackRequest(token) {
-    return config.SLACK_VALID_TOKENS.indexOf(token);
+    return config.SLACK_VALID_TOKENS.indexOf(token) >= 0;
 }
 
 function handleIncomingSlackData(slack_data) {
