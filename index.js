@@ -28,7 +28,7 @@ app.get('/current', function (req, res, next) {
 app.get('/playlist', function (req, res, next) {
     playlistService.getAllSongsInPlaylist(function (playlist) {
         res.send(playlist);
-    }).catch(next);
+    });
 });
 
 app.post('/songs', function (req, res, next) {

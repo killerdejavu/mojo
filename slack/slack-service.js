@@ -13,6 +13,7 @@ function handleIncomingSlackData(slack_data) {
         const parsed_youtube_links = youtubeService.parseYoutubeLinksFromText(slack_data.text);
         if (parsed_youtube_links.length > 0) {
             parsed_youtube_links.forEach(function (youtube_link) {
+                debug('parsed youtube song -', youtube_link);
                 youtubeService.fetchSongAndAddToStore(youtube_link).then((songData) => {
                     return playlistService.addSong(songData.songId).then(() => {
                         sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title} `);

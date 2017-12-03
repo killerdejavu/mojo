@@ -34,7 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
-                    slackService.sendDataToSlackChannel(`:sound: Now playing ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`);
+                    slackService.sendDataToSlackChannel(`:sound: Now playing - ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`);
                     resolve(songData);
                 });
         });
