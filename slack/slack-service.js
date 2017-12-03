@@ -32,6 +32,9 @@ function handleIncomingSlackData(slack_data) {
             });
         }
     }
+    else {
+        console.log('token failure')
+    }
 }
 
 function sendDataToSlackChannel(text) {
