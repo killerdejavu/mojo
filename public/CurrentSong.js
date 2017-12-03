@@ -94,7 +94,9 @@ function playSong() {
     playing = true;
     player.currentTime = (Math.floor((Date.now() - currentSongData.startedPlayingOn) / 1000));
     clearFetchNextSongTimer();
+    playButton.disabled = true;
     player.play().then(function() {
+        playButton.disabled = false;
         playButton.classList.remove('pump');
         playButton.classList.remove('play');
         teamListeningToText.classList.add('hide');
