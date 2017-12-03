@@ -1,29 +1,49 @@
 <html>
     <head>
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
         <title>Mojo Radio</title>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/howler@2.0.5/dist/howler.min.js"></script>
+        <script src="https://d3js.org/d3-timer.v1.min.js"></script>
+        <link rel="stylesheet" href="/reset.css">
+        <link rel="stylesheet" href="/main.css">
     </head>
-    <body>
-        <p id="artist"></p>
-        <p id="song"></p>
+    <body class="flex flex-column">
+        <canvas id="equalizer" width="1280" height="500"></canvas>
+        <div class="header flex">
+            <div class="logo">MOJO</div>
+            <!--<div class="request-info">-->
+                <!--Add songs to the radio-->
+            <!--</div>-->
+        </div>
+        <div class="player flex">
+            <div class="container flex flex-column">
+                <p id="team-listening-to-text">Your team is listening to</p>
+                <h1 id="song">...</h1>
+                <p id="artist">...</p>
+                <button class="play-btn pump play" onclick="togglePlay()">
+                    <svg class="play-icon" width="31" height="36" viewBox="0 0 31 36" xmlns="http://www.w3.org/2000/svg"><path d="M29.08 21.097L6.058 34.914c-1.894 1.136-4.35.522-5.488-1.372C.197 32.92 0 32.21 0 31.484V4.508c0-2.21 1.79-4 4-4 .696 0 1.38.182 1.985.528l23.02 13.16c1.92 1.095 2.585 3.538 1.49 5.456-.34.595-.828 1.092-1.415 1.445z" fill="#FFF" fill-rule="evenodd"/></svg>
+                    <div class="stop-icon"></div>
+                </button>
+            </div>
+        </div>
     </body>
     <script src="CurrentSong.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300i|Montserrat:300,600" rel="stylesheet">
 </html>

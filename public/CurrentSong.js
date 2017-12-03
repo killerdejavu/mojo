@@ -1,6 +1,15 @@
-var player = document.getElementById('player');
 var artistName = document.getElementById('artist');
 var songName = document.getElementById('song');
+var playButton = document.querySelector('.play-btn');
+var teamListeningToText = document.querySelector('#team-listening-to-text');
+
+var canvas = document.getElementById('equalizer'),
+    ctx = canvas.getContext('2d');
+
+var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, audioContext, source, analyser;
+
+var canvasWidth = 1280;
+var canvasHeight = 500;
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -12,29 +21,98 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function fetchCurrentSong() {
+function fetchCurrentSong(autoPlay) {
     var query_value = getParameterByName('next');
-    var url = query_value ? '/current?next=true': '/current';
+    var url = query_value ? '/current?next=true' : '/current';
     axios.get(url)
-        .then(function(response) {
-            var data = response.data;
+        .then(function (response) {
+            currentSongData = response.data;
 
-            artistName.textContent = data.meta.artist ? data.meta.artist[0] : '';
-            songName.textContent = data.meta.title;
-            document.title = data.meta.title + ' - Mojo Radio';
+            artistName.textContent = currentSongData.meta.artist ? currentSongData.meta.artist[0] : currentSongData.meta.video_url;
+            songName.textContent = currentSongData.meta.title;
+            document.title = currentSongData.meta.title + ' - Mojo Radio';
 
-            var player = new Howl({
-                src: [data.s3Url],
-                html5: true,
-                onend: function() {
-                    fetchCurrentSong();
-                }
-            });
+            initMediaPlayer();
 
-            player.seek(Math.floor((Date.now() - data.startedPlayingOn) / 1000));
-            player.play();
-            console.log('starting the song at ', Math.floor((Date.now() - data.startedPlayingOn) / 1000));
+            if(autoPlay && playing) {
+                playSong();
+            } else {
+                setFetchNextSongTimer((currentSongData.startedPlayingOn + currentSongData.meta.duration*1000) - Date.now())
+            }
         })
+}
+
+function setFetchNextSongTimer(time) {
+    fetchNextSongTimer = setTimeout(fetchCurrentSong, time);
+}
+
+function clearFetchNextSongTimer() {
+    clearTimeout(fetchNextSongTimer);
+}
+
+function initMediaPlayer() {
+    player = new Audio();
+    player.crossOrigin = "anonymous";
+    player.preload = true;
+    player.src = currentSongData.s3Url;
+
+    player.addEventListener('ended', function() {
+        player.ended && fetchCurrentSong(true);
+    });
+
+    audioContext = new AudioContext();
+    source = audioContext.createMediaElementSource(player);
+    analyser = audioContext.createAnalyser();
+
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+}
+
+function initEqualizer() {
+
+    if(canvasTimer) {
+        canvasTimer.stop();
+    }
+
+    canvasTimer = d3.timer(function(){
+        var freqData = new Uint8Array(analyser.frequencyBinCount);
+
+        analyser.getByteFrequencyData(freqData);
+
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        for (var i = 0; i < freqData.length; i++ ) {
+            var magnitude = freqData[i];
+            ctx.fillStyle = '#FF5C7C';
+            ctx.fillRect(i*3, canvasHeight, 1, -magnitude*2);
+        }
+    }, 10);
+}
+
+function playSong() {
+    playing = true;
+    player.currentTime = (Math.floor((Date.now() - currentSongData.startedPlayingOn) / 1000));
+    clearFetchNextSongTimer();
+    player.play().then(function() {
+        playButton.classList.remove('pump');
+        playButton.classList.remove('play');
+        teamListeningToText.classList.add('hide');
+        initEqualizer();
+    });
+}
+
+function stopSong() {
+    player.pause();
+    playing = false;
+    playButton.classList.add('pump');
+    playButton.classList.add('play');
+    teamListeningToText.classList.remove('hide');
+    setFetchNextSongTimer((currentSongData.startedPlayingOn + currentSongData.meta.duration*1000) - Date.now())
+}
+
+function togglePlay() {
+    playing ? stopSong() : playSong();
 }
 
 fetchCurrentSong();
