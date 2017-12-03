@@ -33,6 +33,7 @@ function fetchCurrentSong() {
 
             player.seek(Math.floor((Date.now() - data.startedPlayingOn) / 1000));
             player.play();
+            console.log('starting the song at ', Math.floor((Date.now() - data.startedPlayingOn) / 1000));
         })
 }
 
