@@ -5,12 +5,12 @@ const songService = require('../songs/songs-service');
 const playlistService = require('../playlist/playlist-service');
 const slackService = require('../slack/slack-service');
 
-function getCurrentSong() {
+function getCurrentSong(force_change=false) {
     return getCurrentSongDetails().then((songData) => {
         const hasSongEnded = songData && (songData.meta.duration*1000 + songData.startedPlayingOn) < Date.now();
 
         debug('has song ended %s', hasSongEnded);
-        if(!songData || hasSongEnded) {
+        if(!songData || hasSongEnded || force_change) {
             return playlistService.getSong().then((songId) => {
                 if(!songId) {
                     debug('getting random song');
@@ -34,7 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
-                    slackService.sendDataToSlackChannel(`The song ${songData.meta.title} has started.. Listed to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`);
+                    slackService.sendDataToSlackChannel(`:sound: Now playing ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`);
                     resolve(songData);
                 });
         });
