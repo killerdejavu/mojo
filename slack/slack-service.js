@@ -33,6 +33,7 @@ function handleIncomingSlackData(slack_data) {
             parsed_youtube_links.forEach(function (youtube_link) {
                 youtubeService.fetchSongAndAddToStore(youtube_link).then((songData) => {
                     return playlistService.addSong(songData.songId).then(() => {
+                        sendDataToSlackChannel(`The song ${songData.meta.title} has been added to the playlist.. `);
                         console.log('playing song from slack', songData)
                     });
                 });
