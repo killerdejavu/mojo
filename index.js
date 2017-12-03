@@ -57,3 +57,11 @@ app.use(function(err, req, res, next) {
 app.listen(app.get('port'), function () {
     console.log('Node app is running on port', app.get('port'));
 });
+
+process.on('uncaughtException', function(err) {
+    console.log(err);
+});
+
+process.on('unhandledRejection', function(reason, p){
+    console.log(reason);
+});
