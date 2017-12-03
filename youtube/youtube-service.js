@@ -1,4 +1,4 @@
-const debug = require('debug')('mojo:youtube-service');
+const debug = require('debug')('youtube-service');
 
 const youtubeDownloader = require('ytdl-core');
 const songService = require('../songs/songs-service');

@@ -15,34 +15,39 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/', function (request, response) {
-    response.render('index');
+app.get('/', function (req, res) {
+    res.render('index');
 });
 
-app.get('/current', function (request, response) {
+app.get('/current', function (req, res, next) {
     radioService.getCurrentSong().then((songData) => {
-        response.send(songData);
-    });
+        res.send(songData);
+    }).catch(next);
 });
 
-app.get('/playlist', function (req, res) {
+app.get('/playlist', function (req, res, next) {
     playlistService.getAllSongsInPlaylist(function (playlist) {
         res.send(playlist);
-    })
+    }).catch(next);
 });
 
-app.post('/songs', function (req, res) {
+app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink) {
         youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
             return playlistService.addSong(songData.songId).then(() => {
                 res.send(songData);
             });
-        });
+        }).catch(next);
     }
 });
 
 app.post('/slack', function (req, res) {
     slackService.handleIncomingSlackData(req.body);
+});
+
+app.use(function(err, req, res, next) {
+    res.status(500);
+    res.send(err);
 });
 
 app.listen(app.get('port'), function () {

@@ -1,6 +1,8 @@
+const debug = require('debug')('slack-service');
+const axios = require('axios');
+
 var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
-const axios = require('axios');
 
 function isValidSlackRequest(token) {
     return token === "1avbAdJLErZeZ7VoclM0um2b" || token === "7lT991VEoNVG3o0dsTYnBGyG";
@@ -34,8 +36,11 @@ function handleIncomingSlackData(slack_data) {
                 youtubeService.fetchSongAndAddToStore(youtube_link).then((songData) => {
                     return playlistService.addSong(songData.songId).then(() => {
                         sendDataToSlackChannel(`The song ${songData.meta.title} has been added to the playlist.. `);
-                        console.log('playing song from slack', songData)
+                        debug('playing song from slack %O', songData)
                     });
+                }).catch((err) => {
+                    sendDataToSlackChannel(`We could not add the song: ${songData.meta.title}.. please try again`);
+                    debug('an error occured: %s', err);
                 });
             });
         }
