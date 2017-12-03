@@ -10,6 +10,7 @@ function isValidSlackRequest(token) {
 
 function handleIncomingSlackData(slack_data) {
     debug('Incoming slack data - ', slack_data);
+    console.log('Incoming slack data - ', slack_data);
     if (isValidSlackRequest(slack_data.token)) {
         const parsed_youtube_links = youtubeService.parseYoutubeLinksFromText(slack_data.text);
         if (parsed_youtube_links.length > 0) {
