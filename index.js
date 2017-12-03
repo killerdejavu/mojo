@@ -3,6 +3,7 @@ var app = express();
 const radioService = require('./radio/radio-service');
 const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
+const slackService = require('./slack/slack-service');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -35,6 +36,13 @@ app.post('/songs', function (req, res) {
             });
         });
     }
+});
+
+app.post('/slack', function (req, res) {
+    let text = slackService.handleIncomingSlackData(req);
+    res.send({
+        'text': text
+    })
 });
 
 app.listen(app.get('port'), function () {
