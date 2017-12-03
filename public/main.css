@@ -21,6 +21,7 @@ h1 {
 
 .logo {
     letter-spacing: 3px;
+    text-decoration: none;
 }
 .header {
     padding: 32px;

@@ -6,13 +6,19 @@ var teamListeningToText = document.querySelector('#team-listening-to-text');
 var canvas = document.getElementById('equalizer'),
     ctx = canvas.getContext('2d');
 
-var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, audioContext, source, analyser;
+var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, audioContext, source, analyser, canvasWidth, canvasHeight;
 
-var canvasWidth = window.innerWidth;
-var canvasHeight = window.innerHeight;
+function resizeCanvas() {
+    canvasWidth = window.innerWidth;
+    canvasHeight = window.innerHeight;
 
-ctx.canvas.width  = canvasWidth;
-ctx.canvas.height = canvasHeight;
+    ctx.canvas.width  = canvasWidth;
+    ctx.canvas.height = canvasHeight;
+}
+
+window.addEventListener('resize', resizeCanvas, false);
+
+resizeCanvas();
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
