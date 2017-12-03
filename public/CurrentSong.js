@@ -19,18 +19,19 @@ function fetchCurrentSong(seek) {
         .then(function(response) {
             var data = response.data;
 
-            artistName.textContent = data.artist[0];
-            songName.textContent = data.title;
+            artistName.textContent = data.meta.artist ? data.meta.artist[0] : '';
+            songName.textContent = data.meta.title;
+            document.title = data.meta.title + ' - Mojo Radio';
 
             var player = new Howl({
-                src: [data.s3_url],
+                src: [data.s3Url],
                 html5: true,
                 onend: function() {
                     fetchCurrentSong();
                 }
             });
 
-            seek && player.seek(Math.floor((Date.now() - data.start_time) / 1000));
+            seek && player.seek(Math.floor((Date.now() - data.startedPlayingOn) / 1000));
             player.play();
         })
 }

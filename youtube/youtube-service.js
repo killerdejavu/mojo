@@ -1,3 +1,5 @@
+const debug = require('debug')('mojo:youtube-service');
+
 const youtubeDownloader = require('ytdl-core');
 const songService = require('../songs/songs-service');
 
@@ -7,14 +9,21 @@ const youtubeDownloaderOptions = {
 };
 
 function fetchSong(link) {
+
+    debug('fetching link %s', link);
+
     return new Promise((resolve, reject) => {
         let youtubeVideoStream = youtubeDownloader(link, youtubeDownloaderOptions);
 
         youtubeDownloader(link, youtubeDownloaderOptions)
             .on('info', (info, format) => {
+
+                debug('got info %O', info);
+                debug('got format %O', format);
+
                 let songId = info.video_id;
                 let fileExtension = format.container;
-                let songFormat = format.type.split(';')[0];
+                let audioFormat = format.type.split(';')[0];
 
                 let meta = {
                     duration: info.length_seconds,
@@ -24,10 +33,12 @@ function fetchSong(link) {
                     author: info.author.name
                 };
 
+                debug('metadata being sent %O', meta);
+
                 resolve({
                     song: youtubeVideoStream,
                     fileExtension: fileExtension,
-                    songFormat: songFormat,
+                    audioFormat: audioFormat,
                     songId: songId,
                     meta: meta
                 });
@@ -38,11 +49,11 @@ function fetchSong(link) {
     });
 }
 
-function fetchSongAndAddToS3(link) {
+function fetchSongAndAddToStore(link) {
     return fetchSong(link).then(songService.putSong);
 }
 
 module.exports = {
     fetchSong: fetchSong,
-    fetchSongAndAddToS3: fetchSongAndAddToS3
+    fetchSongAndAddToStore: fetchSongAndAddToStore
 };
