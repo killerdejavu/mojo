@@ -102,8 +102,6 @@ function addAllSongsFromS3ToStore() {
                 }, function (err, meta) {
                     delete meta.picture; //dont need the pic... yet
 
-                    meta['s3Url'] = config.S3_BUCKET_URL + songToPlay.Key;
-
                     let songData = {
                         meta: meta,
                         s3Url: config.S3_BUCKET_URL + songToPlay.Key,

@@ -12,7 +12,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function fetchCurrentSong(seek) {
+function fetchCurrentSong() {
     var query_value = getParameterByName('next');
     var url = query_value ? '/current?next=true': '/current';
     axios.get(url)
@@ -31,9 +31,9 @@ function fetchCurrentSong(seek) {
                 }
             });
 
-            seek && player.seek(Math.floor((Date.now() - data.startedPlayingOn) / 1000));
+            player.seek(Math.floor((Date.now() - data.startedPlayingOn) / 1000));
             player.play();
         })
 }
 
-fetchCurrentSong(true);
+fetchCurrentSong();
