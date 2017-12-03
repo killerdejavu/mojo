@@ -42,10 +42,7 @@ app.post('/songs', function (req, res) {
 });
 
 app.post('/slack', function (req, res) {
-    let text = slackService.handleIncomingSlackData(req.body);
-    res.send({
-        'text': text
-    })
+    slackService.handleIncomingSlackData(req.body);
 });
 
 app.listen(app.get('port'), function () {

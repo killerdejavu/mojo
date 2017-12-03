@@ -34,7 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
-                    slackService.sendDataToSlackChannel();
+                    slackService.sendDataToSlackChannel(`The song ${songData.title} has started.. Listed to it at <tiny.cc/rbox-radio|rbox-radio>`);
                     resolve(songData);
                 });
         });

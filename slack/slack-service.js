@@ -41,13 +41,13 @@ function handleIncomingSlackData(slack_data) {
     }
 }
 
-function sendDataToSlackChannel() {
+function sendDataToSlackChannel(text) {
     let hook_url = 'https://hooks.slack.com/services/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';
     axios.post(hook_url, {
-        text: 'New song is starting'
+        text: text
     })
-}
 
+}
 
 module.exports = {
     handleIncomingSlackData: handleIncomingSlackData,
