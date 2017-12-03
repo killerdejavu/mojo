@@ -35,15 +35,5 @@ function fetchCurrentSong(seek) {
             player.play();
         })
 }
-player.addEventListener('loadedmetadata', function() {
-    console.log('metadata -', player.duration)
-});
-
-player.addEventListener('ended', function() {
-    if (player.ended) {
-        console.log('Song has ended!');
-        fetchCurrentSong();
-    }
-});
 
 fetchCurrentSong(true);
