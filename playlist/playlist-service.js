@@ -44,7 +44,7 @@ module.exports = {
                     total_playing_time += Number(parsed_data.meta.duration);
                     return parsed_data
                 });
-                return callback({'total_playing_time_in_mins': total_playing_time, 'songs_in_order': all_songs_data})
+                return callback({'total_playing_time_in_seconds': total_playing_time, 'songs_in_order': all_songs_data})
             })
         });
     }
