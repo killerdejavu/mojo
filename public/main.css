@@ -22,7 +22,13 @@ h1 {
 .logo {
     letter-spacing: 3px;
     text-decoration: none;
+    color: #4A4A4A;
 }
+
+.logo:visited {
+    color: #4A4A4A;
+}
+
 .header {
     padding: 32px;
     justify-content: space-between;
