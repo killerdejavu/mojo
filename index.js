@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 const radioService = require('./radio/radio-service');
 const youtubeService = require('./youtube/youtube-service');
+const playlistService = require('./playlist/playlist-service');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -29,7 +30,9 @@ app.get('/playlist', function (req, res) {
 app.post('/songs', function (req, res) {
     if(req.query.youtubelink) {
         youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
-            res.send(songData);
+            return playlistService.addSong(songData.songId).then(() => {
+                res.send(songData);
+            });
         });
     }
 });
