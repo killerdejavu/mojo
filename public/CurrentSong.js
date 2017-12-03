@@ -18,6 +18,14 @@ function resizeCanvas() {
 
 window.addEventListener('resize', resizeCanvas, false);
 
+document.body.onkeyup = function(e){
+    if(e.keyCode == 32){
+        togglePlay();
+    }
+
+    return false;
+};
+
 resizeCanvas();
 
 function getParameterByName(name, url) {
