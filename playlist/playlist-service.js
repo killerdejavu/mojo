@@ -1,6 +1,7 @@
 const debug = require('debug')('mojo:playlist-service');
 const redisClient = require('../utils/redis');
 const REDIS_KEY_NAMESPACE = require('../config').REDIS_KEY_NAMESPACE;
+const REDIS_SONG_KEY_PREFIX = require('../config').REDIS_SONG_KEY_PREFIX;
 
 const playlistKey = REDIS_KEY_NAMESPACE + 'playlist';
 
@@ -28,8 +29,11 @@ module.exports = {
     addSong: addSong,
     getSong: getSong,
     getAllSongsInPlaylist: function (callback) {
-        redisClient.lrange(playlistKey, 0, -1, function (err, song_ids) {
-            redisClient.mget(song_ids, function (err, all_songs) {
+        redisClient.lrange(playlistKey, 0, -1, function (err, songIds) {
+
+            songIds = songIds.map((songId) => REDIS_SONG_KEY_PREFIX + songId);
+
+            redisClient.mget(songIds, function (err, all_songs) {
                 if (!all_songs) {
                     console.log('no songs in playlist');
                     return callback([])
