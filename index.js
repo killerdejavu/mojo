@@ -35,6 +35,7 @@ app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink) {
         youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
             return playlistService.addSong(songData.songId).then(() => {
+                slackService.sendDataToSlackChannel(`The song ${songData.meta.title} has been added to the playlist.. `);
                 res.send(songData);
             });
         }).catch(next);
