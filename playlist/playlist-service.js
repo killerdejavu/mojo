@@ -41,7 +41,7 @@ module.exports = {
                 var total_playing_time = 0;
                 var all_songs_data = all_songs.map(function (song_raw) {
                     var parsed_data = JSON.parse(song_raw);
-                    total_playing_time += parsed_data.meta.duration;
+                    total_playing_time += Number(parsed_data.meta.duration);
                     return parsed_data
                 });
                 return callback({'total_playing_time_in_mins': total_playing_time, 'songs_in_order': all_songs_data})
