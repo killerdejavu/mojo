@@ -3,7 +3,6 @@ var app = express();
 const radioService = require('./radio/radio-service');
 const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
-const playlistService = require('./playlist/playlist-service');
 
 app.set('port', (process.env.PORT || 5000));
 
