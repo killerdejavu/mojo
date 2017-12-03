@@ -10,18 +10,12 @@ function isValidSlackRequest(token) {
 
 function handleIncomingSlackData(slack_data) {
     debug('Incoming slack data - ', slack_data);
-    console.log('Incoming slack data - ', slack_data);
     if (isValidSlackRequest(slack_data.token)) {
-        console.log('going to parse now');
         const parsed_youtube_links = youtubeService.parseYoutubeLinksFromText(slack_data.text);
-        console.log(parsed_youtube_links);
         if (parsed_youtube_links.length > 0) {
             parsed_youtube_links.forEach(function (youtube_link) {
-                console.log('parsed youtube song -', youtube_link);
                 youtubeService.fetchSongAndAddToStore(youtube_link).then((songData) => {
-                    console.log('adding to play list now....');
                     return playlistService.addSong(songData.songId).then(() => {
-                        console.log('added to playlist.');
                         sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title} `);
                         debug('playing song from slack %O', songData)
                     });
