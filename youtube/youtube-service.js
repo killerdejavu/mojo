@@ -1,4 +1,4 @@
-const debug = require('debug')('mojo:youtube-service');
+const debug = require('debug')('youtube-service');
 
 const youtubeDownloader = require('ytdl-core');
 const songService = require('../songs/songs-service');
@@ -14,38 +14,41 @@ function fetchSong(link) {
 
     return new Promise((resolve, reject) => {
         let youtubeVideoStream = youtubeDownloader(link, youtubeDownloaderOptions);
+        try {
+            youtubeDownloader(link, youtubeDownloaderOptions)
+                .on('info', (info, format) => {
 
-        youtubeDownloader(link, youtubeDownloaderOptions)
-            .on('info', (info, format) => {
+                    debug('got info %O', info);
+                    debug('got format %O', format);
 
-                debug('got info %O', info);
-                debug('got format %O', format);
+                    let songId = info.video_id;
+                    let fileExtension = format.container;
+                    let audioFormat = format.type.split(';')[0];
 
-                let songId = info.video_id;
-                let fileExtension = format.container;
-                let audioFormat = format.type.split(';')[0];
+                    let meta = {
+                        duration: info.length_seconds,
+                        title: info.title,
+                        video_url: info.video_url,
+                        source: 'youtube',
+                        author: info.author.name
+                    };
 
-                let meta = {
-                    duration: info.length_seconds,
-                    title: info.title,
-                    video_url: info.video_url,
-                    source: 'youtube',
-                    author: info.author.name
-                };
+                    debug('metadata being sent %O', meta);
 
-                debug('metadata being sent %O', meta);
-
-                resolve({
-                    song: youtubeVideoStream,
-                    fileExtension: fileExtension,
-                    audioFormat: audioFormat,
-                    songId: songId,
-                    meta: meta
+                    resolve({
+                        song: youtubeVideoStream,
+                        fileExtension: fileExtension,
+                        audioFormat: audioFormat,
+                        songId: songId,
+                        meta: meta
+                    });
+                })
+                .on('error', (err) => {
+                    reject(err);
                 });
-            })
-            .on('error', (err) => {
-                reject(err);
-            });
+        } catch (err) {
+            reject(err);
+        }
     });
 }
 

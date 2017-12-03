@@ -1,6 +1,8 @@
 const debug = require('debug')('mojo:songs-service');
 const musicmetadata = require('musicmetadata');
 const shortid = require('shortid');
+const Random = require("random-js");
+const random = new Random(Random.engines.mt19937().autoSeed());
 
 const s3 = require('../utils/s3');
 const config = require('../config');
@@ -83,7 +85,7 @@ function getRandomSong() {
     return new Promise((resolve, reject) => {
         redisClient.keys(REDIS_SONG_KEY_PREFIX+'*', (err, response) => {
             if(err) return reject(err);
-            resolve(getSong(response[Math.floor(Math.random()*1000) % response.length]))
+            resolve(getSong(random.pick(response)));
         });
     })
 }
