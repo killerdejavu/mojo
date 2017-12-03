@@ -33,11 +33,15 @@ app.get('/playlist', function (req, res, next) {
 
 app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink) {
-        youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
-            return playlistService.addSong(songData.songId).then(() => {
-                res.send(songData);
-            });
-        }).catch(next);
+        try {
+            youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
+                return playlistService.addSong(songData.songId).then(() => {
+                    res.send(songData);
+                });
+            }).catch(next);
+        } catch (err) {
+            next(err);
+        }
     }
 });
 
