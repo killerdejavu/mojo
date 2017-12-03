@@ -8,8 +8,11 @@ var canvas = document.getElementById('equalizer'),
 
 var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, audioContext, source, analyser;
 
-var canvasWidth = 1280;
-var canvasHeight = 500;
+var canvasWidth = window.innerWidth;
+var canvasHeight = window.innerHeight;
+
+ctx.canvas.width  = canvasWidth;
+ctx.canvas.height = canvasHeight;
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
