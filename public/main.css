@@ -49,6 +49,9 @@ h1 {
 #song {
     text-align: center;
     padding: 20px;
+    width: 80%;
+    word-break: break-all;
+    word-wrap: break-word;
 }
 
 #artist {

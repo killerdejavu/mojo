@@ -6,7 +6,9 @@ var teamListeningToText = document.querySelector('#team-listening-to-text');
 var canvas = document.getElementById('equalizer'),
     ctx = canvas.getContext('2d');
 
-var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, audioContext, source, analyser, canvasWidth, canvasHeight;
+var player, currentSongData, playing, fetchNextSongTimer, canvasTimer, source, analyser, canvasWidth, canvasHeight;
+
+var audioContext = new AudioContext();
 
 function resizeCanvas() {
     canvasWidth = window.innerWidth;
@@ -76,7 +78,6 @@ function initMediaPlayer() {
         player.ended && fetchCurrentSong(true);
     });
 
-    audioContext = new AudioContext();
     source = audioContext.createMediaElementSource(player);
     analyser = audioContext.createAnalyser();
 
