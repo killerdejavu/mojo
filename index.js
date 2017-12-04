@@ -44,10 +44,7 @@ app.post('/songs', function (req, res, next) {
 
 app.post('/slack', function (req, res) {
     slackService.handleIncomingSlackData(req.body)
-    .then(function (res_object) {
-        console.log(res_object)
-        res.send(res_object)
-    })
+    res.send('Gotcha!');
 });
 
 app.use(function(err, req, res, next) {
