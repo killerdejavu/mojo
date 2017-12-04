@@ -5,15 +5,15 @@ var playlistService = require('../playlist/playlist-service');
 const songService = require('../songs/songs-service');
 const config = require('../config');
 
-function isValidSlackRequest(token) {
-    return config.SLACK_VALID_TOKENS.indexOf(token) >= 0;
+function isValidSlackRequest(slackData) {
+    return !slackData.bot_id && config.SLACK_VALID_TOKENS.indexOf(slackData.token) >= 0;
 }
 
 function handleIncomingSlackData(slackData) {
 
     debug('Incoming slack data - ', slackData);
 
-    if (isValidSlackRequest(slackData.token)) {
+    if (isValidSlackRequest(slackData)) {
 
         const parsedYoutubeLinks = youtubeService.parseYoutubeLinksFromText(slackData.text);
 
