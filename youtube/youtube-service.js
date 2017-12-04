@@ -13,6 +13,12 @@ function fetchSong(link) {
     debug('fetching link %s', link);
 
     return new Promise((resolve, reject) => {
+        const isValidUrl = youtubeDownloader.validateURL(link);
+
+        if (!isValidUrl) {
+            return reject(new Error('not a valid url'));
+        }
+
         let youtubeVideoStream = youtubeDownloader(link, youtubeDownloaderOptions);
         try {
             youtubeDownloader(link, youtubeDownloaderOptions)
@@ -76,8 +82,22 @@ function parseYoutubeLinksFromText(str) {
     return youtube_links
 }
 
+function getVideoIdFromLink(link) {
+    return isValidYoutubeLink(link)
+        .then(youtubeDownloader.getURLVideoID);
+}
+
+function isValidYoutubeLink(link) {
+    const isValid = youtubeDownloader.validateURL(link);
+
+    return isValid ? Promise.resolve(link) : Promise.reject('Not a valid youtube video link');
+}
+
+
 module.exports = {
     fetchSong: fetchSong,
     fetchSongAndAddToStore: fetchSongAndAddToStore,
-    parseYoutubeLinksFromText: parseYoutubeLinksFromText
+    parseYoutubeLinksFromText: parseYoutubeLinksFromText,
+    getVideoIdFromLink: getVideoIdFromLink,
+    isValidYoutubeLink: isValidYoutubeLink
 };
