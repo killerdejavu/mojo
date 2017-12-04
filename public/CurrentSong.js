@@ -70,7 +70,6 @@ function clearFetchNextSongTimer() {
 function initMediaPlayer() {
     player = new Audio();
     player.crossOrigin = "anonymous";
-    player.preload = true;
     player.src = currentSongData.s3Url;
 
     player.addEventListener('ended', function() {
