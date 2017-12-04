@@ -1,4 +1,4 @@
-const debug = require('debug')('slack-service');
+const debug = require('debug')('mojo:slack-service');
 const axios = require('axios');
 var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
