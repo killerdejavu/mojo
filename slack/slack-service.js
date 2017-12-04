@@ -20,7 +20,7 @@ function handleIncomingSlackData(slack_data) {
                         debug('playing song from slack %O', songData)
                     });
                 }).catch((err) => {
-                    sendDataToSlackChannel(`We could not add the song: ${youtube_link}.. please try again later :sob: :sob:`);
+                    // sendDataToSlackChannel(`We could not add the song: ${youtube_link}.. please try again later :sob: :sob:`);
                     debug('an error occured: %s', err);
                 });
             });
