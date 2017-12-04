@@ -43,7 +43,7 @@ app.post('/songs', function (req, res, next) {
 });
 
 app.post('/slack', function (req, res) {
-    slackService.handleIncomingSlackData(req.body);
+    return slackService.handleIncomingSlackData(req.body);
 });
 
 app.use(function(err, req, res, next) {
