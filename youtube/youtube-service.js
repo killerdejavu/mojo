@@ -31,6 +31,12 @@ function fetchSong(link) {
                     let fileExtension = format.container;
                     let audioFormat = format.type.split(';')[0];
 
+                    const songToLong = Number(info.length_seconds) > 600;
+
+                    if(songToLong) {
+                        return reject('Song is too long.');
+                    }
+
                     let meta = {
                         duration: info.length_seconds,
                         title: info.title,
