@@ -1,7 +1,6 @@
 const debug = require('debug')('mojo:songs-service');
 const musicmetadata = require('musicmetadata');
 const shortid = require('shortid');
-const sampleSize = require('lodash.samplesize');
 const shuffle = require('lodash.shuffle');
 
 const s3 = require('../utils/s3');
