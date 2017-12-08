@@ -45,7 +45,7 @@ function handleIncomingSlackData(slackData) {
 
                     })
                     .catch((err) => {
-                        return respondWithError(err);
+                        return respondWithError(err.message);
                     });
 
             });
