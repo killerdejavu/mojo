@@ -1,8 +1,7 @@
 const debug = require('debug')('mojo:songs-service');
 const musicmetadata = require('musicmetadata');
 const shortid = require('shortid');
-const Random = require("random-js");
-const random = new Random(Random.engines.mt19937().autoSeed());
+const random = require("../utils/random")();
 
 const s3 = require('../utils/s3');
 const config = require('../config');

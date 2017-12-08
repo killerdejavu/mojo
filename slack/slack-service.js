@@ -4,6 +4,16 @@ var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
 const songService = require('../songs/songs-service');
 const config = require('../config');
+const random = require('../utils/random')();
+
+const ERROR_MESSAGES = {
+    noLink: [
+        'Now where did I put my Klingon dictionary? :mag:',
+        'I\'m not very good at conversations (yet). But playing songs from Youtube? That\'s what I do best! Try pasting a Youtube link.',
+        '<https://en.wikipedia.org/wiki/What_we%27ve_got_here_is_failure_to_communicate | What we\'ve got here is failure to communicate.>',
+        '<https://en.wikipedia.org/wiki/Taxi_Driver#.22You_talkin.27_to_me.3F.22 | You talkin\' to me?>'
+    ]
+};
 
 function isValidSlackRequest(slackData) {
     return !slackData.bot_id && config.SLACK_VALID_TOKENS.indexOf(slackData.token) >= 0;
@@ -29,16 +39,18 @@ function handleIncomingSlackData(slackData) {
                             return addSongToPlaylist(existingSongData);
                         }
 
-                        youtubeService.fetchSongAndAddToStore(youtubeLink).then((songData) => {
+                        return youtubeService.fetchSongAndAddToStore(youtubeLink).then((songData) => {
                             return addSongToPlaylist(songData);
                         });
 
                     })
                     .catch((err) => {
-                        return respondWithError(err, youtubeLink);
+                        return respondWithError(err);
                     });
 
             });
+        } else {
+            return respondWithError(random.pick(ERROR_MESSAGES.noLink));
         }
     }
     else {
@@ -61,8 +73,8 @@ function respondWithSongData(songData) {
     sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title}`);
 }
 
-function respondWithError(err, youtubeLink) {
-    sendDataToSlackChannel(`We could not add the song: ${youtubeLink}. ${err}.`);
+function respondWithError(err) {
+    sendDataToSlackChannel(err);
     debug('an error occurred: %s', err);
 }
 

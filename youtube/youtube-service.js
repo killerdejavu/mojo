@@ -2,10 +2,23 @@ const debug = require('debug')('youtube-service');
 
 const youtubeDownloader = require('ytdl-core');
 const songService = require('../songs/songs-service');
+const random = require("../utils/random")();
 
 const youtubeDownloaderOptions = {
     quality: 'highest',
     filter: 'audioonly'
+};
+
+const ERROR_MESSAGES = {
+    songTooLong: [
+        'Sorry! But that song is way too long. #rhymes',
+        'Try something less than 10mins, we don\'t want to put people to sleep, do we? :wink:'
+    ],
+    notAValidYoutubeLink: [
+        'There was no video on that link, just a :vhs:',
+        'This better not be you, Cheta. :unamused:',
+        'Sorry, but I found no video on that Youtube link. Looks like you have fallen prey to the _all-youtube-links-look-the-same syndrome_.'
+    ]
 };
 
 function fetchSong(link) {
@@ -34,7 +47,7 @@ function fetchSong(link) {
                     const songToLong = Number(info.length_seconds) > 600;
 
                     if(songToLong) {
-                        return reject('Song is too long.');
+                        return reject(random.pick(ERROR_MESSAGES.songTooLong));
                     }
 
                     let meta = {
@@ -96,7 +109,7 @@ function getVideoIdFromLink(link) {
 function isValidYoutubeLink(link) {
     const isValid = youtubeDownloader.validateURL(link);
 
-    return isValid ? Promise.resolve(link) : Promise.reject('Not a valid youtube video link');
+    return isValid ? Promise.resolve(link) : Promise.reject(random.pick(ERROR_MESSAGES.notAValidYoutubeLink));
 }
 
 
