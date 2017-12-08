@@ -49,8 +49,6 @@ function handleIncomingSlackData(slackData) {
                     });
 
             });
-        } else {
-            return respondWithError(random.pick(ERROR_MESSAGES.noLink));
         }
     }
     else {
@@ -61,11 +59,11 @@ function handleIncomingSlackData(slackData) {
 function sendDataToSlackChannel(text) {
     axios.post(config.SLACK_OUTGOING_URL, {
         text: text
-    })
+    });
 }
 
 function addSongToPlaylist(songData) {
-    playlistService.addSong(songData.songId).then(() => respondWithSongData(songData))
+    playlistService.addSong(songData.songId).then(() => respondWithSongData(songData));
 }
 
 function respondWithSongData(songData) {

@@ -1,13 +1,15 @@
 const debug = require('debug')('mojo:songs-service');
 const musicmetadata = require('musicmetadata');
 const shortid = require('shortid');
-const random = require("../utils/random")();
+const sampleSize = require('lodash.samplesize');
+const shuffle = require('lodash.shuffle');
 
 const s3 = require('../utils/s3');
 const config = require('../config');
 const redisClient = require('../utils/redis');
 
 const REDIS_SONG_KEY_PREFIX = config.REDIS_SONG_KEY_PREFIX;
+const REDIS_RANDOM_LIST_KEY = config.REDIS_RANDOM_LIST_KEY;
 
 function getSongStreamFromS3(Key) {
     return s3.getObject({
@@ -80,13 +82,57 @@ function getSong(songId) {
     });
 }
 
-function getRandomSong() {
+function getAllSongs() {
     return new Promise((resolve, reject) => {
         redisClient.keys(REDIS_SONG_KEY_PREFIX+'*', (err, response) => {
             if(err) return reject(err);
-            resolve(getSong(random.pick(response)));
+            resolve(response);
         });
     })
+}
+
+function getSongFromRandomList() {
+    return new Promise((resolve, reject) => {
+        redisClient.lpop(REDIS_RANDOM_LIST_KEY, (err, response) => {
+            if(err) return reject(err);
+            resolve(response);
+        });
+    })
+}
+
+function putSongsInRandomList() {
+    return getAllSongs().then((songs) => {
+        const shuffledSongs = shuffle(songs);
+        const multi = redisClient.multi();
+
+        shuffledSongs.forEach((song) => {
+            multi.rpush(REDIS_RANDOM_LIST_KEY, song);
+        });
+
+        return new Promise((resolve, reject) => {
+            multi.exec((err, response) => {
+                if(err) return reject(err);
+                resolve(shuffledSongs);
+            });
+        });
+    })
+}
+
+function isRandomListEmpty() {
+    return new Promise((resolve, reject) => {
+        redisClient.exists(REDIS_RANDOM_LIST_KEY, (err, response) => {
+            if(err) return reject(err);
+            resolve(!response);
+        });
+    });
+}
+
+function getRandomSong() {
+    return isRandomListEmpty().then((isEmpty) => {
+        debug('isRandomListEmpty %s', isEmpty);
+        if (!isEmpty) return getSongFromRandomList().then(getSong);
+        return putSongsInRandomList().then(getSongFromRandomList).then(getSong);
+    });
 }
 
 function addAllSongsFromS3ToStore() {
