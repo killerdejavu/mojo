@@ -24,7 +24,7 @@ app.get('/', function (req, res) {
 app.get('/current', function (req, res, next) {
     radioService.getCurrentSong().then((songData) => {
         res.send(songData);
-        slapp.sendMessage(`:sound: Now playing - ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`, '#mojo-radio');
+        // slapp.sendMessage(`:sound: Now playing - ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`, '#mojo-radio');
     }).catch(next);
 });
 
