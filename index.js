@@ -24,6 +24,7 @@ app.get('/', function (req, res) {
 app.get('/current', function (req, res, next) {
     radioService.getCurrentSong().then((songData) => {
         res.send(songData);
+        slapp.sendMessage(`:sound: Now playing - ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`, '#mojo-radio');
     }).catch(next);
 });
 
@@ -37,7 +38,6 @@ app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink) {
         youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
             return playlistService.addSong(songData).then(() => {
-                slackService.sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title}`);
                 res.send(songData);
             });
         }).catch(next);

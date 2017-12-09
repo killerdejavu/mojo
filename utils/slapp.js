@@ -26,4 +26,12 @@ slapp.client.users.list({token: SLACK_APP_TOKEN}).then((users) => {
     BOT_USER_ID = member.id;
 });
 
+slapp.sendMessage = (msg, channel) => {
+    slapp.client.chat.postMessage({
+        token: SLACK_BOT_TOKEN,
+        text: msg,
+        channel: channel
+    });
+};
+
 module.exports = slapp;
