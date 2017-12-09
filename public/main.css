@@ -72,7 +72,7 @@ h1 {
 .player .container {
     align-items: center;
     margin-top: -80px;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
 }
 
 .play-btn {
@@ -164,4 +164,32 @@ h1 {
 
 .hide {
     opacity: 0 !important;
+}
+
+#enable-notifications {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FF5C7C;
+    color: #fff;
+    padding: 6px;
+}
+
+#enable-notifications span {
+    top: -1px;
+    position: relative;
+}
+
+#enable-notifications a {
+    color: #fff;
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 1px solid #fff;
+    margin-left: 8px;
+}
+
+#enable-notifications.hide {
+    display: none;
+
 }

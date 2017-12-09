@@ -2,6 +2,8 @@ var artistName = document.getElementById('artist');
 var songName = document.getElementById('song');
 var playButton = document.querySelector('.play-btn');
 var teamListeningToText = document.querySelector('#team-listening-to-text');
+var enableNotification = document.querySelector('#enable-notifications');
+var enableNotificationLink = document.querySelector('#enable-notifications a');
 
 var canvas = document.getElementById('equalizer'),
     ctx = canvas.getContext('2d');
@@ -40,7 +42,7 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function fetchCurrentSong(autoPlay) {
+function fetchCurrentSong(autoPlay, dontNotify) {
     var query_value = getParameterByName('next');
     var url = query_value ? '/current?next=true' : '/current';
     axios.get(url)
@@ -51,12 +53,13 @@ function fetchCurrentSong(autoPlay) {
             songName.textContent = currentSongData.meta.title;
             document.title = currentSongData.meta.title + ' - Mojo Radio';
 
-            initMediaPlayer();
-
             if(autoPlay && playing) {
-                playSong();
+                playSong().then(function() {
+                    notify('Now playing - '+currentSongData.meta.title)
+                });
             } else {
-                setFetchNextSongTimer((currentSongData.startedPlayingOn + currentSongData.meta.duration*1000) - Date.now())
+                setFetchNextSongTimer((currentSongData.startedPlayingOn + currentSongData.meta.duration*1000) - Date.now());
+                !dontNotify && notify('Now playing - '+currentSongData.meta.title);
             }
         })
 }
@@ -109,10 +112,11 @@ function initEqualizer() {
 
 function playSong() {
     playing = true;
+    initMediaPlayer();
     player.currentTime = (Math.floor((Date.now() - currentSongData.startedPlayingOn) / 1000));
     clearFetchNextSongTimer();
     playButton.disabled = true;
-    player.play().then(function() {
+    return player.play().then(function() {
         playButton.disabled = false;
         playButton.classList.remove('pump');
         playButton.classList.remove('play');
@@ -134,4 +138,35 @@ function togglePlay() {
     playing ? stopSong() : playSong();
 }
 
-fetchCurrentSong();
+function notify(msg) {
+    if (!("Notification" in window)) {
+        return;
+    }
+
+    if (Notification.permission === "granted") {
+        var notification = new Notification(msg, {
+            silent: true,
+            icon: '/favicon-96x96.png'
+        });
+    }
+}
+
+function requestNotification() {
+    Notification.requestPermission(function (permission) {
+        if (permission === "granted") {
+            var notification = new Notification("Shazam!");
+        }
+    });
+    enableNotification.classList.add('hide');
+}
+
+if (("Notification" in window) && Notification.permission !== "denied" && Notification.permission !== "granted") {
+    enableNotification.classList.remove('hide');
+
+    enableNotificationLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        requestNotification();
+    });
+}
+
+fetchCurrentSong(null, true);
