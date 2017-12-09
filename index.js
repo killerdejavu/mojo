@@ -7,6 +7,8 @@ const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
 const slackService = require('./slack/slack-service');
 
+const slapp = require('./utils/slapp');
+
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -34,7 +36,7 @@ app.get('/playlist', function (req, res, next) {
 app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink) {
         youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
-            return playlistService.addSong(songData.songId).then(() => {
+            return playlistService.addSong(songData).then(() => {
                 slackService.sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title}`);
                 res.send(songData);
             });
@@ -42,10 +44,7 @@ app.post('/songs', function (req, res, next) {
     }
 });
 
-app.post('/slack', function (req, res) {
-    slackService.handleIncomingSlackData(req.body)
-    res.send('Gotcha!');
-});
+slapp.attachToExpress(app);
 
 app.use(function(err, req, res, next) {
     res.status(500);

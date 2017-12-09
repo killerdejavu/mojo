@@ -1,82 +1,84 @@
 const debug = require('debug')('mojo:slack-service');
-const axios = require('axios');
 var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
-const songService = require('../songs/songs-service');
-const config = require('../config');
-const random = require('../utils/random')();
+const slapp = require('../utils/slapp');
 
-const ERROR_MESSAGES = {
-    noLink: [
-        'Now where did I put my Klingon dictionary? :mag:',
-        'I\'m not very good at conversations (yet). But playing songs from Youtube? That\'s what I do best! Try pasting a Youtube link.',
-        '<https://en.wikipedia.org/wiki/What_we%27ve_got_here_is_failure_to_communicate | What we\'ve got here is failure to communicate.>',
-        '<https://en.wikipedia.org/wiki/Taxi_Driver#.22You_talkin.27_to_me.3F.22 | You talkin\' to me?>'
-    ]
-};
+slapp.message('(^play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)$', ['direct_message'],
+    (msg, completeText, command, query) => {
+        debug(command);
+        debug(query);
+        youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+    });
 
-function isValidSlackRequest(slackData) {
-    return !slackData.bot_id && config.SLACK_VALID_TOKENS.indexOf(slackData.token) >= 0;
-}
+slapp.message('^(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*) (<.*>)*', ['direct_mention', 'mention'],
+    (msg, completeText, command, query) => {
+        debug(command);
+        debug(query);
+        youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+    });
 
-function handleIncomingSlackData(slackData) {
+slapp.message('^(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*',
+    ['direct_message', 'direct_mention', 'mention'],
+    (msg, completeText, command, link) => {
+        debug(command);
+        debug(link);
 
-    debug('Incoming slack data - ', slackData);
-
-    if (isValidSlackRequest(slackData)) {
-
-        const parsedYoutubeLinks = youtubeService.parseYoutubeLinksFromText(slackData.text);
-
-        if (parsedYoutubeLinks.length > 0) {
-
-            parsedYoutubeLinks.forEach(function (youtubeLink) {
-
-                youtubeService.getVideoIdFromLink(youtubeLink)
-                    .then(songService.getSong)
-                    .then((existingSongData) => {
-
-                        if (existingSongData && existingSongData.songId) {
-                            return addSongToPlaylist(existingSongData);
-                        }
-
-                        return youtubeService.fetchSongAndAddToStore(youtubeLink).then((songData) => {
-                            return addSongToPlaylist(songData);
-                        });
-
-                    })
-                    .catch((err) => {
-                        return respondWithError(err.message);
-                    });
-
+        fetchAndAddSongFromYoutube(link)
+            .then((songData) => respondWithSongData(msg, songData))
+            .catch((err) => {
+                return respondWithError(msg, err.message || err);
             });
-        }
-    }
-    else {
-        debug('token failure')
-    }
-}
+    });
 
-function sendDataToSlackChannel(text) {
-    axios.post(config.SLACK_OUTGOING_URL, {
-        text: text
+slapp.action('addToPlaylist', 'link', (msg, link) => {
+    fetchAndAddSongFromYoutube(link)
+        .then((songData) => {
+            msg.respond(msg.body.response_url, `:white_check_mark: Added to playlist - ${songData.meta.title}`)
+        })
+        .catch((err) => {
+            msg.respond(msg.body.response_url, err.message);
+        });
+});
+
+function fetchAndAddSongFromYoutube(link) {
+    return youtubeService.fetchSongAndAddToStore(link).then((songData) => {
+        return playlistService.addSong(songData);
     });
 }
 
-function addSongToPlaylist(songData) {
-    playlistService.addSong(songData.songId).then(() => respondWithSongData(songData));
+function respondWithResults(msg, results) {
+    msg.say({
+        text: '',
+        attachments: results.map((result) => {
+            let attachment = {};
+
+            attachment.title = result.snippet.title;
+            attachment.title_link = `https://youtube.com/watch?v=${result.id.videoId}`;
+            attachment.author_name = result.snippet.channelTitle;
+            attachment.thumb_url = result.snippet.thumbnails.default.url;
+            attachment.callback_id = 'addToPlaylist';
+            attachment.actions = [
+                {
+                    name: 'link',
+                    text: 'Add to playlist',
+                    type: 'button',
+                    value: attachment.title_link
+                }
+            ];
+
+            return attachment;
+        })
+    });
 }
 
-function respondWithSongData(songData) {
+function respondWithSongData(msg, songData) {
     debug('added from slack %O', songData);
-    sendDataToSlackChannel(`:white_check_mark: Added to playlist - ${songData.meta.title}`);
+    msg.say(`:white_check_mark: Added to playlist - ${songData.meta.title}`);
 }
 
-function respondWithError(err) {
-    sendDataToSlackChannel(err);
+function respondWithError(msg, err) {
     debug('an error occurred: %s', err);
+    msg.say(err);
 }
 
-module.exports = {
-    handleIncomingSlackData: handleIncomingSlackData,
-    sendDataToSlackChannel: sendDataToSlackChannel
-};
+module.exports = {};

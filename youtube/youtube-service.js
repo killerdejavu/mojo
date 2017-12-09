@@ -1,7 +1,9 @@
 const debug = require('debug')('youtube-service');
-
+const axios = require('axios');
 const youtubeDownloader = require('ytdl-core');
+
 const songService = require('../songs/songs-service');
+const config = require('../config');
 const random = require("../utils/random")();
 
 const youtubeDownloaderOptions = {
@@ -15,9 +17,8 @@ const ERROR_MESSAGES = {
         'Try something less than 10mins, we don\'t want to put people to sleep, do we? :wink:'
     ],
     notAValidYoutubeLink: [
-        'There was no video on that link, just a :vhs:',
-        'This better not be you, Cheta. :unamused:',
-        'Sorry, but I found no video on that Youtube link. Looks like you have fallen prey to the _all-youtube-links-look-the-same syndrome_.'
+        'There was no video on that link, found a :vhs: instead.',
+        'This better not be you, Cheta. :unamused:'
     ]
 };
 
@@ -78,27 +79,14 @@ function fetchSong(link) {
 }
 
 function fetchSongAndAddToStore(link) {
-    return fetchSong(link).then(songService.putSong);
-}
-
-function parseYoutubeLinksFromText(str) {
-    const regex = /(?:https?:\/\/)(?:www\.)?(?:youtube|youtu)\.(?:be|com)\/[^\s]+/g;
-    let m;
-
-    let youtube_links = [];
-    while ((m = regex.exec(str)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === regex.lastIndex) {
-            regex.lastIndex++;
-        }
-
-        // The result can be accessed through the `m`-variable.
-        m.forEach((match, groupIndex) => {
-            youtube_links.push(match);
-        });
-    }
-
-    return youtube_links
+    return getVideoIdFromLink(link)
+        .then(songService.getSong)
+        .then((existingSongData) => {
+            if (existingSongData && existingSongData.songId) {
+                return existingSongData;
+            }
+            return fetchSong(link).then(songService.putSong);
+        })
 }
 
 function getVideoIdFromLink(link) {
@@ -112,11 +100,24 @@ function isValidYoutubeLink(link) {
     return isValid ? Promise.resolve(link) : Promise.reject(random.pick(ERROR_MESSAGES.notAValidYoutubeLink));
 }
 
+function searchSong(query) {
+    return axios.get('https://www.googleapis.com/youtube/v3/search', {
+        params: {
+            q: query,
+            key: config.YOUTUBE_API_KEY,
+            part: 'snippet',
+            maxResults: 5,
+            order: 'viewCount'
+        }
+    }).then((response) => {
+        return response.data.items;
+    })
+}
 
 module.exports = {
     fetchSong: fetchSong,
     fetchSongAndAddToStore: fetchSongAndAddToStore,
-    parseYoutubeLinksFromText: parseYoutubeLinksFromText,
     getVideoIdFromLink: getVideoIdFromLink,
-    isValidYoutubeLink: isValidYoutubeLink
+    isValidYoutubeLink: isValidYoutubeLink,
+    searchSong: searchSong
 };

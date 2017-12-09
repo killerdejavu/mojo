@@ -5,12 +5,12 @@ const REDIS_SONG_KEY_PREFIX = require('../config').REDIS_SONG_KEY_PREFIX;
 
 const playlistKey = REDIS_KEY_NAMESPACE + 'playlist';
 
-function addSong(songId) {
+function addSong(songData) {
     return new Promise((resolve, reject)=>{
-        debug('adding song to playlist %s', songId);
-        redisClient.rpush(playlistKey, songId, (err, response) => {
+        debug('adding song to playlist %s', songData.songId);
+        redisClient.rpush(playlistKey, songData.songId, (err, response) => {
             if (err) return reject(err);
-            resolve(songId);
+            resolve(songData);
         });
     });
 }
