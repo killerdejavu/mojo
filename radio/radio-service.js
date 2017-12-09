@@ -3,7 +3,7 @@ const redisClient = require('../utils/redis');
 const REDIS_CURRENT_SONG_KEY = require('../config').REDIS_CURRENT_SONG_KEY;
 const songService = require('../songs/songs-service');
 const playlistService = require('../playlist/playlist-service');
-const slapp = require('../utils/slapp');
+const slackService = require('../slack/slack-service');
 
 function getCurrentSong(force_change=false) {
     return getCurrentSongDetails().then((songData) => {
@@ -34,7 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
-                    slapp.sendMessage(`:sound: Now playing - ${songData.meta.title}. Listen to it at <https://tiny.cc/rbox-radio|rbox-radio> :notes: :notes:`, '#mojo-radio');
+                    slackService.sendMessage(`:sound: Now playing - *${songData.meta.title}*. Listen to it on <https://tiny.cc/rbox-radio|mojo-radio> :notes: :notes:`, '#mojo-radio');
                     resolve(songData);
                 });
         });

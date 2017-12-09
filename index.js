@@ -7,8 +7,6 @@ const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
 const slackService = require('./slack/slack-service');
 
-const slapp = require('./utils/slapp');
-
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
@@ -43,7 +41,7 @@ app.post('/songs', function (req, res, next) {
     }
 });
 
-slapp.attachToExpress(app);
+slackService.attachToExpress(app);
 
 app.use(function(err, req, res, next) {
     res.status(500);

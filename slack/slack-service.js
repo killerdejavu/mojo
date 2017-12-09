@@ -30,13 +30,18 @@ slapp.message('^(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,
             });
     });
 
-slapp.action('addToPlaylist', 'link', (msg, link) => {
+slapp.action('addToPlaylist', 'link', (msg, response) => {
+
+    const link = response.split('|')[0];
+    const title = response.split('|')[1];
+
+    msg.respond(msg.body.response_url, `:hourglass: Adding the song - ${title}...`);
     fetchAndAddSongFromYoutube(link)
         .then((songData) => {
             msg.respond(msg.body.response_url, `:white_check_mark: Added to playlist - ${songData.meta.title}`)
         })
         .catch((err) => {
-            msg.respond(msg.body.response_url, err.message);
+            msg.respond(msg.body.response_url, err.message || err);
         });
 });
 
@@ -62,7 +67,8 @@ function respondWithResults(msg, results) {
                     name: 'link',
                     text: 'Add to playlist',
                     type: 'button',
-                    value: attachment.title_link
+                    style: 'primary',
+                    value: attachment.title_link+'|'+result.snippet.title
                 }
             ];
 
@@ -81,4 +87,4 @@ function respondWithError(msg, err) {
     msg.say(err);
 }
 
-module.exports = {};
+module.exports = slapp;
