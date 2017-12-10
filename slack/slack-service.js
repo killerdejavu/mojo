@@ -38,6 +38,7 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     msg.respond(msg.body.response_url, `:hourglass: Adding the song - ${title}...`);
     fetchAndAddSongFromYoutube(link)
         .then((songData) => {
+            debug('got the song data %O', songData);
             msg.respond(msg.body.response_url, `:white_check_mark: Added to playlist - ${songData.meta.title}`)
         })
         .catch((err) => {

@@ -8,9 +8,15 @@ const playlistKey = REDIS_KEY_NAMESPACE + 'playlist';
 function addSong(songData) {
     return new Promise((resolve, reject)=>{
         debug('adding song to playlist %s', songData.songId);
-        redisClient.rpush(playlistKey, songData.songId, (err, response) => {
-            if (err) return reject(err);
-            resolve(songData);
+        checkIfSongExists(songData.songId).then((songExists) => {
+            if(songExists) {
+                debug('song exists in playlist');
+                return resolve(songData);
+            }
+            redisClient.rpush(playlistKey, songData.songId, (err, response) => {
+                if (err) return reject(err);
+                resolve(songData);
+            });
         });
     });
 }
@@ -23,6 +29,15 @@ function getSong() {
             resolve(response);
         })
     })
+}
+
+function checkIfSongExists(songId) {
+    return new Promise((resolve, reject) => {
+        redisClient.lrange(playlistKey, 0, -1, (err, songIds) => {
+            if(err) return reject(err);
+            resolve(songIds.indexOf(songId) !== -1);
+        });
+    });
 }
 
 module.exports = {
