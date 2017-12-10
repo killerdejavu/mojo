@@ -35,14 +35,17 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     const link = response.split('|')[0];
     const title = response.split('|')[1];
 
+    debug('action %O', msg.body);
+
     msg.respond(msg.body.response_url, `:hourglass: Adding the song - ${title}...`);
+
     fetchAndAddSongFromYoutube(link)
         .then((songData) => {
             debug('got the song data %O', songData);
-            msg.respond(msg.body.response_url, `:white_check_mark: Added to playlist - ${songData.meta.title}`)
+            slapp.sendMessage(`:white_check_mark: Added to playlist - ${songData.meta.title}`, null, msg.body.channel.id);
         })
         .catch((err) => {
-            msg.respond(msg.body.response_url, err.message || err);
+            slapp.sendMessage(err.message || err, null, msg.body.channel.id);
         });
 });
 
@@ -53,29 +56,28 @@ function fetchAndAddSongFromYoutube(link) {
 }
 
 function respondWithResults(msg, results) {
-    msg.say({
-        text: '',
-        attachments: results.map((result) => {
-            let attachment = {};
+    const attachments = results.map((result) => {
+        let attachment = {};
 
-            attachment.title = result.snippet.title;
-            attachment.title_link = `https://youtube.com/watch?v=${result.id.videoId}`;
-            attachment.author_name = result.snippet.channelTitle;
-            attachment.thumb_url = result.snippet.thumbnails.default.url;
-            attachment.callback_id = 'addToPlaylist';
-            attachment.actions = [
-                {
-                    name: 'link',
-                    text: 'Add to playlist',
-                    type: 'button',
-                    style: 'primary',
-                    value: attachment.title_link+'|'+result.snippet.title
-                }
-            ];
+        attachment.title = result.snippet.title;
+        attachment.title_link = `https://youtube.com/watch?v=${result.id.videoId}`;
+        attachment.author_name = result.snippet.channelTitle;
+        attachment.thumb_url = result.snippet.thumbnails.default.url;
+        attachment.callback_id = 'addToPlaylist';
+        attachment.actions = [
+            {
+                name: 'link',
+                text: 'Add to playlist',
+                type: 'button',
+                style: 'primary',
+                value: attachment.title_link+'|'+result.snippet.title
+            }
+        ];
 
-            return attachment;
-        })
+        return attachment;
     });
+
+    slapp.sendEphemeralMessage('', attachments, msg.body.event.user, msg.body.event.channel);
 }
 
 function respondWithSongData(msg, songData) {

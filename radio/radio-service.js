@@ -34,7 +34,7 @@ function setCurrentSongDetails(songId) {
                 JSON.stringify(songData),
                 (err, response) => {
                     if (err) return reject(err);
-                    slackService.sendMessage(`:sound: Now playing - *${songData.meta.title}*. Listen to it on <https://tiny.cc/rbox-radio|mojo-radio> :notes: :notes:`, '#mojo-radio');
+                    slackService.sendMessage(`:sound: Now playing - *${songData.meta.title}*. Listen to it on <https://tiny.cc/rbox-radio|mojo-radio> :notes: :notes:`, null, '#mojo-radio');
                     resolve(songData);
                 });
         });
