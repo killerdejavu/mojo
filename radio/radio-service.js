@@ -4,6 +4,7 @@ const REDIS_CURRENT_SONG_KEY = require('../config').REDIS_CURRENT_SONG_KEY;
 const songService = require('../songs/songs-service');
 const playlistService = require('../playlist/playlist-service');
 const slackService = require('../slack/slack-service');
+const throttle = require('lodash.throttle');
 
 function getCurrentSong(force_change=false) {
     return getCurrentSongDetails().then((songData) => {
@@ -52,5 +53,5 @@ function getCurrentSongDetails() {
 }
 
 module.exports = {
-    getCurrentSong: getCurrentSong
+    getCurrentSong: throttle(getCurrentSong, 100)
 };
