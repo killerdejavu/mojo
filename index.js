@@ -1,3 +1,4 @@
+require('dotenv').config()
 var express = require('express');
 var app = express();
 var bodyParser = require("body-parser");
@@ -32,8 +33,9 @@ app.get('/playlist', function (req, res, next) {
 });
 
 app.post('/songs', function (req, res, next) {
-    if(req.query.youtubelink) {
-        youtubeService.fetchSongAndAddToStore(req.query.youtubelink).then((songData) => {
+    if(req.query.youtubelink || req.body.youtubelink) {
+        link = req.query.youtubelink || req.body.youtubelink
+        youtubeService.fetchSongAndAddToStore(link).then((songData) => {
             return playlistService.addSong(songData).then(() => {
                 res.send(songData);
             });

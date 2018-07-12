@@ -5,6 +5,7 @@ const config = require('../config');
 
 const SLACK_APP_TOKEN = config.SLACK_APP_TOKEN;
 const SLACK_BOT_TOKEN = config.SLACK_BOT_TOKEN;
+const BOT_NAME = config.SLACK_BOT_NAME;
 let BOT_USER_ID = null;
 
 const slapp = Slapp({
@@ -28,7 +29,7 @@ if(process.env.NODE_ENV !== 'production') {
 
 slapp.client.users.list({token: SLACK_APP_TOKEN}).then((users) => {
     const member = users.members.find((member) => {
-        return member.real_name === 'mojo' && member.is_bot;
+        return member.real_name === BOT_NAME && member.is_bot;
     });
 
     BOT_USER_ID = member.id;

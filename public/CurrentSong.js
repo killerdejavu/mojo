@@ -138,6 +138,15 @@ function togglePlay() {
     playing ? stopSong() : playSong();
 }
 
+function addSong() {
+    axios.post(
+        '/songs',
+        {
+            'youtubelink': 'https://www.youtube.com/watch?v=zZasH6qkn8M'
+        }
+    )
+}
+
 function notify(msg) {
     if (!("Notification" in window)) {
         return;

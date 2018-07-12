@@ -23,7 +23,6 @@ const ERROR_MESSAGES = {
 };
 
 function fetchSong(link) {
-
     debug('fetching link %s', link);
 
     return new Promise((resolve, reject) => {

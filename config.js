@@ -1,5 +1,5 @@
-const S3_BUCKET = 'mojo-jojo';
-const MUSIC_FOLDER = 'music/';
+const S3_BUCKET = process.env.S3_BUCKET;
+const MUSIC_FOLDER = process.env.S3_BUCKET_SONGS_FOLDER;
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL;
 const AWS_CRED = {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -17,8 +17,9 @@ const REDIS_RANDOM_LIST_KEY = REDIS_KEY_NAMESPACE+'random_list';
 
 const SLACK_APP_TOKEN = process.env.SLACK_APP_TOKEN;
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
+const SLACK_BOT_NAME = process.env.SLACK_BOT_NAME;
+const SLACK_CHANNEL_NAME = process.env.SLACK_CHANNEL_NAME;
 const SLACK_OUTGOING_URL = process.env.SLACK_OUTGOING_URL;
-const SLACK_VALID_TOKENS = ["1avbAdJLErZeZ7VoclM0um2b", "7lT991VEoNVG3o0dsTYnBGyG", "9aHAuhSvq7JJiP0iQFq7NyWC", "NSmMHx7CogynU0m5VYiajq5c"];
 
 const config = {
     S3_BUCKET: S3_BUCKET,
@@ -33,7 +34,6 @@ const config = {
     REDIS_RANDOM_LIST_KEY: REDIS_RANDOM_LIST_KEY,
     SLACK_APP_TOKEN: SLACK_APP_TOKEN,
     SLACK_BOT_TOKEN: SLACK_BOT_TOKEN,
-    SLACK_VALID_TOKENS: SLACK_VALID_TOKENS,
     SLACK_OUTGOING_URL: SLACK_OUTGOING_URL
 };
 
