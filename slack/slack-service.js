@@ -85,6 +85,10 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     });
 });
 
+slapp.command('mojo', 'playlist (.*)', (msg, text, name) => {
+   msg.respond('I see your command ' + text + ' ' + name)
+});
+
 function fetchAndAddSongFromYoutube(link) {
     return youtubeService.fetchSongAndAddToStore(link).then((songData) => {
         return playlistService.addSong(songData);
