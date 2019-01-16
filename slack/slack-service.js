@@ -3,11 +3,6 @@ var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
 const slapp = require('../utils/slapp');
 
-slapp.message('^(hi|hello|hey).*', ['direct_mention', 'direct_message', 'mention'], (msg, text, greeting) => {
-    msg
-    .say(`${greeting}, how are you?`)
-})
-
 slapp.message('(^play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)$', ['direct_mention', 'direct_message', 'mention'],
     (msg, completeText, command, query) => {
         debug(command);
@@ -22,16 +17,41 @@ slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(
         youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
     });
 
-slapp.event('app_mention', (msg, text) => {
+slapp.event('app_mention', (msg) => {
 
-    let regex = '^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*'
-    console.log('Isndie app mention')
-    console.log(msg)
-    console.log(text)
+    let text = msg.body.event.text;
+    let regex = '^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*';
+    let criteria = new RegExp(regex, 'i');
+    let match = text.match(criteria);
 
-    // debug(command);
-    // debug(query);
-    // youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+    if (match && match.length >= 4 && match[3]) {
+        let query = match[3];
+        youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+    }
+    else {
+        debug('query didnt match')
+    }
+});
+
+slapp.event('app_mention', (msg) => {
+
+    let text = msg.body.event.text;
+    let regex = '^(<.*>)*w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*';
+    let criteria = new RegExp(regex, 'i');
+    let match = text.match(criteria);
+
+    if (match && match.length >= 4 && match[3]) {
+        let link = match[3];
+        debug(link);
+        fetchAndAddSongFromYoutube(link)
+        .then((songData) => respondWithSongData(msg, songData))
+        .catch((err) => {
+            return respondWithError(msg, err.message || err);
+        });
+    }
+    else {
+        debug('query didnt match')
+    }
 });
 
 slapp.message('^(<.*>)*\w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*',
