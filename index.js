@@ -7,6 +7,7 @@ const radioService = require('./radio/radio-service');
 const playlistService = require('./playlist/playlist-service');
 const youtubeService = require('./youtube/youtube-service');
 const slackService = require('./slack/slack-service');
+const songService = require('./songs/songs-service');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -44,6 +45,11 @@ app.post('/songs', function (req, res, next) {
     }
 });
 
+app.post('/loadAll', function (req, res, next) {
+    console.log('Inside POst')
+   songService.addAllSongsFromS3ToStore()
+});
+
 slackService.attachToExpress(app);
 
 app.use(function(err, req, res, next) {
@@ -62,3 +68,5 @@ process.on('uncaughtException', function(err) {
 process.on('unhandledRejection', function(reason, p){
     console.log(reason);
 });
+
+module.exports = app;

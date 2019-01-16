@@ -30,6 +30,7 @@ slapp.event('app_mention', (msg) => {
     }
     else {
         debug('query didnt match')
+        debug(msg)
         debug(text)
         debug(match)
     }
