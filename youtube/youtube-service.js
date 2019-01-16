@@ -31,7 +31,7 @@ function fetchSong(link) {
         if (!isValidUrl) {
             return reject(new Error('not a valid url'));
         }
-
+        console.log('fetching song!!')
         let youtubeVideoStream = youtubeDownloader(link, youtubeDownloaderOptions);
         try {
             youtubeDownloader(link, youtubeDownloaderOptions)
@@ -81,6 +81,7 @@ function fetchSongAndAddToStore(link) {
     return getVideoIdFromLink(link)
         .then(songService.getSong)
         .then((existingSongData) => {
+            console.log(existingSongData)
             if (existingSongData && existingSongData.songId) {
                 return existingSongData;
             }

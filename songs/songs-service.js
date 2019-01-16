@@ -21,13 +21,17 @@ function putSongToS3(songData) {
     debug('putting song to s3 with id %s', songData.songId);
 
     return new Promise((resolve, reject) => {
+        console.log(config.MUSIC_FOLDER + songData.songId + '.' + songData.fileExtension)
         s3.upload({
             Key: config.MUSIC_FOLDER + songData.songId + '.' + songData.fileExtension,
             Body: songData.song,
             ContentType: songData.audioFormat,
             ACL: 'public-read'
         }, (err, response) => {
-            if(err) return reject(err);
+            if(err) {
+                console.log(err)
+                return reject(err);
+            }
 
             debug('successfully put song to s3 with response %O', response);
 
@@ -58,6 +62,7 @@ function putSongToRedis(songData) {
 }
 
 function putSong(songData) {
+    console.log(songData)
     return putSongToS3(songData).then((response) => {
         songData.s3Url = response.s3Response.Location;
         delete songData.song;
@@ -67,6 +72,7 @@ function putSong(songData) {
 }
 
 function getSong(songId) {
+    console.log(songId)
     const songKey = songId.startsWith(REDIS_SONG_KEY_PREFIX) ? songId : REDIS_SONG_KEY_PREFIX + songId;
     debug('getting song from store with key %s', songKey);
 
@@ -135,11 +141,12 @@ function getRandomSong() {
 }
 
 function addAllSongsFromS3ToStore() {
-    s3.listObjectsV2({
+    console.log('ALl')
+    return s3.listObjectsV2({
         Prefix: config.MUSIC_FOLDER
     }, function (err, response) {
         var songs = response.Contents;
-
+        console.log(response.Contents.length);
         songs.map(function (songToPlay) {
             if(songToPlay.Key.endsWith('.mp3')) {
                 musicmetadata(getSongStreamFromS3(songToPlay.Key), {
