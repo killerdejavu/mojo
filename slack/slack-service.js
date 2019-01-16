@@ -4,7 +4,7 @@ var playlistService = require('../playlist/playlist-service');
 const slapp = require('../utils/slapp');
 
 slapp.message('^(hi|hello|hey).*', ['direct_mention', 'direct_message', 'mention'], (msg, text, greeting) => {
-  msg
+    msg
     .say(`${greeting}, how are you?`)
 })
 
@@ -21,6 +21,18 @@ slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(
         debug(query);
         youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
     });
+
+slapp.event('app_mention', (msg, text) => {
+
+    let regex = '^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*'
+    console.log('Isndie app mention')
+    console.log(msg)
+    console.log(text)
+
+    // debug(command);
+    // debug(query);
+    // youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+});
 
 slapp.message('^(<.*>)*\w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*',
     ['direct_mention', 'direct_message', 'mention'],
