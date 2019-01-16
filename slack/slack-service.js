@@ -85,7 +85,8 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     });
 });
 
-slapp.command('mojo', 'playlist (.*)', (msg, text, name) => {
+slapp.command('mojo', '.*', (msg, text, name) => {
+    debug('In the command')
    msg.respond('I see your command ' + text + ' ' + name)
 });
 
