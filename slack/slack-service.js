@@ -42,7 +42,7 @@ slapp.event('app_mention', (msg) => {
 });
 
 slapp.event('app_mention', (msg) => {
-
+    debug('Inside app mention')
     let text = msg.body.event.text;
     let match = text.match(new RegExp(`^<@${config.SLACK_BOT_USER_ID}>:{0,1}(.*)`));
     if (match) {

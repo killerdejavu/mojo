@@ -45,9 +45,11 @@ app.post('/songs', function (req, res, next) {
     }
 });
 
-app.post('/loadAll', function (req, res, next) {
+app.post('/loadall', function (req, res, next) {
     console.log('Inside POst')
-   songService.addAllSongsFromS3ToStore()
+    songService.addAllSongsFromS3ToStore().then(() => {
+        res.send({});
+    })
 });
 
 slackService.attachToExpress(app);
