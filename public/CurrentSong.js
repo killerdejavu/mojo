@@ -111,6 +111,7 @@ function initEqualizer() {
 }
 
 function playSong() {
+    audioContext.resume();
     playing = true;
     initMediaPlayer();
     player.currentTime = (Math.floor((Date.now() - currentSongData.startedPlayingOn) / 1000));
