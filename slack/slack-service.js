@@ -10,7 +10,7 @@ slapp.message('(^play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)$', ['direct_m
         youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
     });
 
-slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*', ['direct_mention', 'mention'],
+slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*', ['direct_mention', 'mention', 'app_mention'],
     (msg, completeText, mention, command, query) => {
         debug(command);
         debug(query);
@@ -18,7 +18,7 @@ slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(
     });
 
 slapp.message('^(<.*>)*\w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*',
-    ['direct_message', 'direct_mention', 'mention'],
+    ['direct_message', 'direct_mention', 'mention', 'app_mention'],
     (msg, mention, completeText, command, link) => {
         debug(command);
         debug(link);
