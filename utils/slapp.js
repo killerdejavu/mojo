@@ -5,8 +5,8 @@ const config = require('../config');
 
 const SLACK_APP_TOKEN = config.SLACK_APP_TOKEN;
 const SLACK_BOT_TOKEN = config.SLACK_BOT_TOKEN;
-const BOT_NAME = config.SLACK_BOT_NAME;
-let BOT_USER_ID = null;
+const BOT_NAME = 'mojo';
+let BOT_USER_ID = config.SLACK_BOT_USER_ID;
 
 const slapp = Slapp({
     context (req, res, next) {
