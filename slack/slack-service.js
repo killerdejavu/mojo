@@ -19,7 +19,7 @@ slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(
 
 slapp.event('app_mention', (msg) => {
 
-    let text = msg.body.event.text;
+    let text = msg.stripDirectMention();
     let regex = '^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*';
     let criteria = new RegExp(regex, 'i');
     let match = text.match(criteria);
@@ -30,12 +30,14 @@ slapp.event('app_mention', (msg) => {
     }
     else {
         debug('query didnt match')
+        debug(text)
+        debug(match)
     }
 });
 
 slapp.event('app_mention', (msg) => {
 
-    let text = msg.body.event.text;
+    let text = msg.stripDirectMention();
     let regex = '^(<.*>)*w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*';
     let criteria = new RegExp(regex, 'i');
     let match = text.match(criteria);
@@ -51,6 +53,8 @@ slapp.event('app_mention', (msg) => {
     }
     else {
         debug('query didnt match')
+        debug(text)
+        debug(match)
     }
 });
 
