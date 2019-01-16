@@ -2,6 +2,7 @@ const debug = require('debug')('mojo:slack-service');
 var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
 const slapp = require('../utils/slapp');
+const config = require('../config');
 
 slapp.message('(^play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)$', ['direct_mention', 'direct_message', 'mention'],
     (msg, completeText, command, query) => {
