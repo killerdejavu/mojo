@@ -19,10 +19,15 @@ slapp.message('^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(
 
 slapp.event('app_mention', (msg) => {
 
-    let text = msg.stripDirectMention();
+    let text = msg.body.event.text;
+    let match = text.match(new RegExp(`^<@${config.SLACK_BOT_USER_ID}>:{0,1}(.*)`));
+    if (match) {
+        text = match[1].trim()
+    }
+
     let regex = '^(<.*>)*\w?(play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)\w?(<.*>)*';
     let criteria = new RegExp(regex, 'i');
-    let match = text.match(criteria);
+    match = text.match(criteria);
 
     if (match && match.length >= 4 && match[3]) {
         let query = match[3];
@@ -38,10 +43,14 @@ slapp.event('app_mention', (msg) => {
 
 slapp.event('app_mention', (msg) => {
 
-    let text = msg.stripDirectMention();
+    let text = msg.body.event.text;
+    let match = text.match(new RegExp(`^<@${config.SLACK_BOT_USER_ID}>:{0,1}(.*)`));
+    if (match) {
+        text = match[1].trim()
+    }
     let regex = '^(<.*>)*w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*';
     let criteria = new RegExp(regex, 'i');
-    let match = text.match(criteria);
+    match = text.match(criteria);
 
     if (match && match.length >= 4 && match[3]) {
         let link = match[3];
@@ -66,10 +75,10 @@ slapp.message('^(<.*>)*\w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._
         debug(link);
 
         fetchAndAddSongFromYoutube(link)
-            .then((songData) => respondWithSongData(msg, songData))
-            .catch((err) => {
-                return respondWithError(msg, err.message || err);
-            });
+        .then((songData) => respondWithSongData(msg, songData))
+        .catch((err) => {
+            return respondWithError(msg, err.message || err);
+        });
     });
 
 slapp.action('addToPlaylist', 'link', (msg, response) => {
@@ -82,13 +91,13 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     msg.respond(msg.body.response_url, `:hourglass: Adding the song - ${title}...`);
 
     fetchAndAddSongFromYoutube(link)
-        .then((songData) => {
-            debug('got the song data %O', songData);
-            slapp.sendMessage(`:white_check_mark: Added to playlist - ${songData.meta.title}`, null, msg.body.channel.id);
-        })
-        .catch((err) => {
-            slapp.sendMessage(err.message || err, null, msg.body.channel.id);
-        });
+    .then((songData) => {
+        debug('got the song data %O', songData);
+        slapp.sendMessage(`:white_check_mark: Added to playlist - ${songData.meta.title}`, null, msg.body.channel.id);
+    })
+    .catch((err) => {
+        slapp.sendMessage(err.message || err, null, msg.body.channel.id);
+    });
 });
 
 function fetchAndAddSongFromYoutube(link) {
@@ -112,7 +121,7 @@ function respondWithResults(msg, results) {
                 text: 'Add to playlist',
                 type: 'button',
                 style: 'primary',
-                value: attachment.title_link+'|'+result.snippet.title
+                value: attachment.title_link + '|' + result.snippet.title
             }
         ];
 
