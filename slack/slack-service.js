@@ -3,6 +3,11 @@ var youtubeService = require('../youtube/youtube-service');
 var playlistService = require('../playlist/playlist-service');
 const slapp = require('../utils/slapp');
 
+slapp.message('^(hi|hello|hey).*', ['direct_mention', 'direct_message'], (msg, text, greeting) => {
+  msg
+    .say(`${greeting}, how are you?`)
+})
+
 slapp.message('(^play|search|add) ([a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*)$', ['direct_message'],
     (msg, completeText, command, query) => {
         debug(command);

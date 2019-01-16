@@ -35,6 +35,7 @@ app.get('/playlist', function (req, res, next) {
 app.post('/songs', function (req, res, next) {
     if(req.query.youtubelink || req.body.youtubelink) {
         link = req.query.youtubelink || req.body.youtubelink
+        console.log(link);
         youtubeService.fetchSongAndAddToStore(link).then((songData) => {
             return playlistService.addSong(songData).then(() => {
                 res.send(songData);
