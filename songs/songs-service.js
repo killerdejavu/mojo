@@ -146,7 +146,6 @@ function addAllSongsFromS3ToStore() {
         Prefix: config.MUSIC_FOLDER
     }, function (err, response) {
         var songs = response.Contents;
-        console.log(response.Contents.length);
         songs.map(function (songToPlay) {
             if(songToPlay.Key.endsWith('.mp3')) {
                 musicmetadata(getSongStreamFromS3(songToPlay.Key), {

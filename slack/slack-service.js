@@ -33,40 +33,24 @@ slapp.event('app_mention', (msg) => {
     if (match && match.length >= 4 && match[3]) {
         let query = match[3];
         youtubeService.searchSong(query).then((results) => respondWithResults(msg, results));
+        return
     }
-    else {
-        debug('query didnt match')
-        debug(msg)
-        debug(text)
-        debug(match)
-    }
-});
 
-slapp.event('app_mention', (msg) => {
-    debug('Inside app mention')
-    let text = msg.body.event.text;
-    let match = text.match(new RegExp(`^<@${config.SLACK_BOT_USER_ID}>:{0,1}(.*)`));
-    if (match) {
-        text = match[1].trim()
-    }
-    let regex = '^(<.*>)*w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*';
-    let criteria = new RegExp(regex, 'i');
+    regex = '^(<.*>)*w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*';
+    criteria = new RegExp(regex, 'i');
     match = text.match(criteria);
 
     if (match && match.length >= 4 && match[3]) {
         let link = match[3];
         debug(link);
-        fetchAndAddSongFromYoutube(link)
+        return fetchAndAddSongFromYoutube(link)
         .then((songData) => respondWithSongData(msg, songData))
         .catch((err) => {
             return respondWithError(msg, err.message || err);
         });
     }
-    else {
-        debug('query didnt match')
-        debug(text)
-        debug(match)
-    }
+
+    debug('query didnt match')
 });
 
 slapp.message('^(<.*>)*\w?(play|add) <([(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))|.*> .*',
