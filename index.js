@@ -70,5 +70,3 @@ process.on('uncaughtException', function(err) {
 process.on('unhandledRejection', function(reason, p){
     console.log(reason);
 });
-
-module.exports = app;
