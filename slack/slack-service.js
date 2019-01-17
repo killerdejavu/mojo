@@ -95,10 +95,10 @@ slapp.command('/mojo', 'playlist', (msg, text, name) => {
             songs.forEach((song) =>  {
                 text = text + `${number}. ${song.meta.title} \n`
             });
-            msg.respond(text)
+            slapp.sendMessage(text, null, msg.body.channel.id)
         }
         else {
-            msg.respond('No songs in playlist. It will pickup random songs! :dancer: :dancer:')
+            slapp.sendMessage('No songs in playlist. It will pickup random songs! :dancer: :dancer:', null, null, msg.body.channel.id)
         }
 
     });
