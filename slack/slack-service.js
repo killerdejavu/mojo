@@ -93,7 +93,8 @@ slapp.command('/mojo', 'playlist', (msg, text, name) => {
             let text = "Current Playlist \n";
             let number = 1;
             songs.forEach((song) =>  {
-                text = text + `${number}. ${song.meta.title} \n`
+                text = text + `${number}. ${song.meta.title} \n`;
+                number = number + 1;
             });
             msg.respond({text: text, response_type: 'in_channel'})
         }
