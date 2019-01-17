@@ -85,9 +85,23 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     });
 });
 
-slapp.command('/mojo', (msg) => {
+slapp.command('/mojo', 'playlist (.*)', (msg, text, name) => {
     debug('In the command');
-    msg.respond('I see your command ' + msg)
+    playlistService.getAllSongsInPlaylist(function (playlist) {
+        let songs = playlist.songs_in_order;
+        if (songs) {
+            let text = "Current Playlist \n";
+            let number = 1;
+            songs.forEach(song, function () {
+                text = text + `${number}. ${song.meta.title} \n`
+            });
+            msg.respond(text)
+        }
+        else {
+            msg.respond('No songs in playlist. It will pickup random songs! :dancer: :dancer:')
+        }
+
+    });
 });
 
 function fetchAndAddSongFromYoutube(link) {
