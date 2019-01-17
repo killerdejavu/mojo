@@ -85,14 +85,14 @@ slapp.action('addToPlaylist', 'link', (msg, response) => {
     });
 });
 
-slapp.command('/mojo', 'playlist (.*)', (msg, text, name) => {
+slapp.command('/mojo', 'playlist', (msg, text, name) => {
     debug('In the command');
     playlistService.getAllSongsInPlaylist(function (playlist) {
         let songs = playlist.songs_in_order;
         if (songs) {
             let text = "Current Playlist \n";
             let number = 1;
-            songs.forEach(song, function () {
+            songs.forEach((song) =>  {
                 text = text + `${number}. ${song.meta.title} \n`
             });
             msg.respond(text)
