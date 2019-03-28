@@ -1,0 +1,63 @@
+{
+  "addons": [
+    "rediscloud"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "NODE_ENV": {
+      "required": true
+    },
+    "REDISCLOUD_URL": {
+      "required": true
+    },
+    "S3_BUCKET": {
+      "required": true
+    },
+    "S3_BUCKET_SONGS_FOLDER": {
+      "required": true
+    },
+    "S3_BUCKET_URL": {
+      "required": true
+    },
+    "SLACK_APP_TOKEN": {
+      "required": true
+    },
+    "SLACK_BOT_NAME": {
+      "required": true
+    },
+    "SLACK_BOT_TOKEN": {
+      "required": true
+    },
+    "SLACK_BOT_USER_ID": {
+      "required": true
+    },
+    "SLACK_CHANNEL_NAME": {
+      "required": true
+    },
+    "SLACK_OUTGOING_URL": {
+      "required": true
+    },
+    "YOUTUBE_API_KEY": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "mojo",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
