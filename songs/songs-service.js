@@ -45,7 +45,7 @@ function putSongToS3(songData) {
 
 function putSongToRedis(songData) {
 
-    debug('putting song to redis with id %s', songData.songId);
+    console.log('putting song to redis with id %s', songData.songId);
 
     return new Promise((resolve, reject) => {
         redisClient.set(REDIS_SONG_KEY_PREFIX + songData.songId, JSON.stringify(songData), (err, response) => {
