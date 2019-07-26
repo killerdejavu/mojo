@@ -141,13 +141,14 @@ function getRandomSong() {
 }
 
 function addAllSongsFromS3ToStore() {
-    console.log('ALl')
+    console.log('All')
     return s3.listObjectsV2({
         Prefix: config.MUSIC_FOLDER
     }, function (err, response) {
         var songs = response.Contents;
         songs.map(function (songToPlay) {
-            if(songToPlay.Key.endsWith('.mp3')) {
+            console.log(songToPlay.Key);
+            if(songToPlay.Key.endsWith('.webm')) {
                 musicmetadata(getSongStreamFromS3(songToPlay.Key), {
                     duration: true,
                     fileSize: songToPlay.Size
