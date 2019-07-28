@@ -189,7 +189,7 @@ function addAllSongsFromS3ToStore() {
             audioFormat: audioFormat,
             songId: songId,
             meta: meta,
-            s3Url: songToPlay.location,
+            s3Url: `https://mojoradio.s3.amazonaws.com/${songToPlay.Key}`,
           };
           if (meta.duration > 0) {
             console.log(songData);
