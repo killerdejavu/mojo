@@ -141,7 +141,7 @@ function getRandomSong() {
 }
 
 function addAllSongsFromS3ToStore() {
-    console.log('All')
+    console.log('Running addAllSongsFromS3ToStore...');
     return s3.listObjectsV2({
         Prefix: config.MUSIC_FOLDER
     }, function (err, response) {
@@ -149,12 +149,15 @@ function addAllSongsFromS3ToStore() {
         songs.map(function (songToPlay) {
             console.log(songToPlay.Key);
             if(songToPlay.Key.endsWith('.webm')) {
+                console.log('get metdata...');
                 musicmetadata(getSongStreamFromS3(songToPlay.Key), {
                     duration: true,
                     fileSize: songToPlay.Size
                 }, function (err, meta) {
                     delete meta.picture; //dont need the pic... yet
-
+                    console.log('error...');
+                    console.log(err);
+                    console.log('error done...');
                     let songData = {
                         meta: meta,
                         s3Url: config.S3_BUCKET_URL + songToPlay.Key,
@@ -162,7 +165,7 @@ function addAllSongsFromS3ToStore() {
                     };
 
                     debug('putting song to redis %O', songData);
-
+                    console.log('putting the song to redis ', songData.songId);
                     if (meta.duration > 0) {
                         putSongToRedis(songData)
                     }
