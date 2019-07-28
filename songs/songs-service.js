@@ -99,7 +99,7 @@ function getAllSongs() {
       if (err) return reject(err);
       resolve(response);
     });
-  }).then((data) => console.log(data))
+  })
 }
 
 function getSongFromRandomList() {
@@ -115,7 +115,7 @@ function putSongsInRandomList() {
   return getAllSongs().then((songs) => {
     const shuffledSongs = shuffle(songs);
     const multi = redisClient.multi();
-
+    console.log('add songs to random list...', songs.length);
     shuffledSongs.forEach((song) => {
       multi.rpush(REDIS_RANDOM_LIST_KEY, song);
     });
