@@ -153,7 +153,7 @@ function addAllSongsFromS3ToStore() {
   }, function (err, response) {
     var songs = response.Contents;
     songs.map(function (songToPlay) {
-      console.log(songToPlay.Key);
+      console.log(songToPlay);
       if (songToPlay.Key.endsWith('.webm')) {
         console.log('get metdata...');
         const link = `https://www.youtube.com/watch?v=${songToPlay.Key.split(".webm")[0].split("songs/")[1]}`;
@@ -188,7 +188,8 @@ function addAllSongsFromS3ToStore() {
             fileExtension: fileExtension,
             audioFormat: audioFormat,
             songId: songId,
-            meta: meta
+            meta: meta,
+            s3Url: songToPlay.location,
           };
           if (meta.duration > 0) {
             console.log(songData);
